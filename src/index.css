@@ -1,0 +1,200 @@
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: local("IBM Plex Mono"),
+    url(./fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf) format("truetype");
+}
+
+.fl-right {
+  float: right;
+}
+
+.ui {
+  font-size: 100%;
+  font-family: "IBM Plex Mono" !important;
+}
+
+.ui.label {
+  line-height: 1.5rem;
+}
+
+a.hashtag {
+  color: #34495e !important;
+  font-size: 12px;
+  padding: 5px;
+  padding-left: 0px;
+}
+
+a.hashtag:hover {
+  color: #7f8c8d !important;
+}
+
+a.hashtag i {
+  font-size: 10px;
+}
+
+.ui.card.log-item {
+  background-color: #f5f6fa;
+}
+
+.ui.ui.card.log-item .image {
+  border-radius: 0px !important;
+}
+
+.ui.card.log-item .image-group img {
+  height: 100%;
+}
+
+.image-carousel-container .slick-track {
+  width: 100% !important;
+}
+
+.filter-bar {
+  padding-left: 10px;
+}
+
+.filter-bar .time-section-card {
+  background-color: #f5f6fa;
+}
+
+.filter-bar .time-section-content .filter-option {
+  margin-bottom: 10px;
+}
+
+.filter-bar .time-section-content .filter-option button {
+  width: 100%;
+  text-align: left;
+}
+
+/* Store Infor Side Bar */
+.admin-layout_side-bar {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.info-field {
+  margin-top: 10px;
+}
+
+.info-field h5 {
+  margin-bottom: 5px;
+}
+
+/* left side bar */
+.admin-layout_menu {
+  padding-left: 25px;
+}
+
+.admin-layout_menu .ui.vertical.menu {
+  width: 100%;
+}
+
+.admin-layout_menu a {
+  font-size: 15px !important;
+}
+
+.admin-layout_menu .ui.vertical.menu {
+  padding-left: 25px;
+}
+
+/* admin section */
+.section-header .ui.breadcrumb {
+  font-size: 15px;
+  padding-top: 15px;
+}
+
+.section-header button {
+  float: right;
+}
+
+.section-header {
+  margin-bottom: 15px;
+}
+
+/* view menu */
+.item.menu-item {
+  min-height: 150px;
+  margin-bottom: 10px;
+  background: #e8e8e8;
+  padding: 30px !important;
+  border-radius: 5px;
+}
+
+.item .menu-item_actions {
+  float: right !important;
+}
+
+.item.menu-item .description {
+  margin-top: 15px;
+}
+
+/* menu modify modal */
+.menu-modify-modal {
+}
+
+.menu-modify-modal .description,
+.store-modify-modal .description {
+  min-width: 70% !important;
+}
+
+/* view orders */
+.grid-order {
+  background: #e8e8e8;
+  /* padding: 20px; */
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+/* store */
+.btn-cart-toggle {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* cart */
+.cart-item-name {
+  font-size: 12px !important;
+  margin-bottom: 5px !important;
+}
+
+.cart-item-note {
+  font-size: 11px;
+  font-style: italic;
+}
+
+.cart-quantity {
+  background: #ecf0f1;
+  border-radius: 5px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.cart-subtotal {
+  font-size: 12px !important;
+  margin-bottom: 5px !important;
+  text-align: right;
+}
+
+.cart-remove {
+  /* padding: 5px; */
+}
+
+.cart-remove:hover {
+  cursor: pointer;
+}
+
+.total {
+  font-weight: bold;
+}
+
+/* authentication */
+.auth-form {
+  margin-top: 10%;
+}
+
+.auth-form img {
+  margin-bottom: 20px;
+}
