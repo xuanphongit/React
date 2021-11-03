@@ -1,10 +1,13 @@
 import { Modal, Button, Image, Form, Icon, Label } from "semantic-ui-react"
 import { forwardRef, useImperativeHandle, useRef, useState } from "react"
-import { generateMenuItem } from "../../helpers/fake-data-helper"
+import itemApi from "../../api/itemApi"
+import { dataURIToBlob } from "../../helpers/common-helper"
+import { useSelector } from "react-redux"
 
 const MenuDetailModal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
   const [menu, setItem] = useState({})
+  const [id, setId] = useState(null)
   const inputFileRef = useRef(null)
 
   useImperativeHandle(ref, () => ({
@@ -12,23 +15,53 @@ const MenuDetailModal = forwardRef((props, ref) => {
       setIsOpen(true)
 
       if (id) {
-        setItem(generateMenuItem())
+        setId(id)
+        itemApi.GetItemById(id).then(response => {
+          setItem(response.data)
+        })
       } else {
+        setFile(null)
         setItem({})
       }
     },
   }))
 
+  const signInformation = useSelector(state => state.SignIn)
+  const [file, setFile] = useState(null)
+  const { image, name, price } = menu
+  const imgSrc = `data:image/png;base64,${image}`
+
   const chooseFile = e => {
-    /*Selected files data can be collected here.*/
-    console.log(e.target.files)
+    setFile(e.target.files[0])
   }
+
+  const SaveItem = () => {
+    if (id) {
+      const form_data = new FormData(document.getElementById("ItemData"))
+      form_data.append("ShopId", signInformation.signInInfor.shopId)
+      form_data.append("ItemId", menu.itemId)
+      if (!file) {
+        form_data.delete("Image")
+        form_data.append("Image", dataURIToBlob(image))
+      }
+      itemApi.UpdateItem(form_data).then(response => {
+        props.refreshData()
+      })
+    } else {
+      const form_data = new FormData(document.getElementById("ItemData"))
+      form_data.append("ShopId", signInformation.signInInfor.shopId)
+      itemApi.AddItem(form_data).then(response => {
+        props.refreshData()
+      })
+    }
+
+    setIsOpen(false)
+  }
+
   const requestChooseFile = () => {
     /*Collecting node-element and performing click*/
     inputFileRef.current.click()
   }
-
-  const { image, name, price, description } = menu
 
   return (
     <Modal
@@ -44,22 +77,29 @@ const MenuDetailModal = forwardRef((props, ref) => {
             <Image
               rounded
               fluid
-              src={image || "https://dummyimage.com/900x900/ecf0f1/aaa"}
               wrapped
+              src={
+                file
+                  ? URL.createObjectURL(file)
+                  : image
+                  ? imgSrc
+                  : "https://dummyimage.com/900x900/ecf0f1/aaa"
+              }
+              alt={file ? file.name : null}
             />
             <Modal.Description>
-              <Form size={"small"}>
+              <Form size={"small"} id="ItemData">
                 <Form.Field>
                   <label>Name</label>
-                  <input placeholder="Name" value={name} />
+                  <input placeholder="Name" defaultValue={name} name="Name" />
                 </Form.Field>
                 <Form.Field>
                   <label>Price</label>
-                  <input placeholder="Price" value={price} />
-                </Form.Field>
-                <Form.Field>
-                  <label>Description</label>
-                  <textarea placeholder="Description" value={description} />
+                  <input
+                    placeholder="Price"
+                    defaultValue={price}
+                    name="Price"
+                  />
                 </Form.Field>
                 <Form.Field>
                   <Button
@@ -72,7 +112,7 @@ const MenuDetailModal = forwardRef((props, ref) => {
                       Upload File
                     </Button>
                     <Label basic pointing="left">
-                      {image || "Please select image"}
+                      {"Please select image"}
                     </Label>
                   </Button>
                   <input
@@ -81,6 +121,7 @@ const MenuDetailModal = forwardRef((props, ref) => {
                     ref={inputFileRef}
                     onChange={chooseFile}
                     accept="image/*"
+                    name="Image"
                   />
                 </Form.Field>
               </Form>
@@ -96,7 +137,7 @@ const MenuDetailModal = forwardRef((props, ref) => {
           content="Submit"
           labelPosition="right"
           icon="checkmark"
-          onClick={() => setIsOpen(false)}
+          onClick={() => SaveItem()}
           positive
         />
       </Modal.Actions>
