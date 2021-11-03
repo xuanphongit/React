@@ -2,18 +2,17 @@ import { Button, Grid, Icon, Image, List } from "semantic-ui-react"
 import { formatCurrency } from "./../helpers/number-helper"
 
 const MenuItem = ({ item, viewOrder, addToCart }) => {
-  const { image, name, price, description, id } = item
+  const { image, name, price, id } = item
   return (
     <List.Item className="menu-item">
       <List.Content>
         <Grid>
           <Grid.Column width={4}>
-            <Image rounded src={image} />
+            <Image rounded src={`data:image/jpeg;base64,${image}`} />
           </Grid.Column>
           <Grid.Column width={10}>
             <List.Header as="a">{name}</List.Header>
             <List.Header>{formatCurrency(price)}</List.Header>
-            <List.Description>{description}</List.Description>
           </Grid.Column>
           <Grid.Column width={2}>
             <div className="menu-item_actions">

@@ -32,7 +32,6 @@ const Login = () => {
   const dispatch = useDispatch()
 
   const submit = () => {
-    // toastSuccess("Log in successfully")
     var form_data = new FormData(document.getElementById("sign-in-form"))
     const data = { phoneNumber: form_data.get("phoneNumber") }
 
@@ -54,7 +53,6 @@ const Login = () => {
             toastError(error.response.data)
           }
         })
-      // history.push("/admin")
     } else {
       customerApi
         .Login(data)
@@ -72,7 +70,6 @@ const Login = () => {
             toastError(error.response.data)
           }
         })
-      // history.push("/")
     }
   }
 

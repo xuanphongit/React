@@ -30,6 +30,16 @@ const shopApi = {
     const url = "Shop"
     return axiosClient.put(url, data, config)
   },
+
+  getShopInforById(data) {
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+    const url = `Shop/${data}`
+    return axiosClient.get(url, null, config)
+  },
 }
 
 export default shopApi
