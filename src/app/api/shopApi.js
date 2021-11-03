@@ -32,6 +32,11 @@ const shopApi = {
   },
 
   getShopInforById(data) {
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
     const url = `Shop/${data}`
     return axiosClient.get(url, null, config)
   },
