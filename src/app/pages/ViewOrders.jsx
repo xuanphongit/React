@@ -10,7 +10,7 @@ import { useSelector } from "react-redux"
 const ViewOrders = () => {
 
 
-  const isShopFlag = useSelector(state => state.SignIn)
+  const signInformation = useSelector(state => state.SignIn)
 
   // never changes, so we can use useMemo
   const columnDefs = useMemo(

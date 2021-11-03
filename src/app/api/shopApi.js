@@ -31,6 +31,11 @@ const shopApi = {
     return axiosClient.put(url, data, config)
   },
 
+  getShopInforById(data) {
+    const url = `Shop/${data}`
+    return axiosClient.get(url, null, config)
+  },
+
   GetAll(){
     const config = {
       headers: {
