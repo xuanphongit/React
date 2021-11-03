@@ -32,14 +32,20 @@ const shopApi = {
   },
 
   getShopInforById(data) {
+    const url = `Shop/${data}`
+    return axiosClient.get(url, null, config)
+  },
+
+  GetAll(){
     const config = {
       headers: {
         "content-type": "application/json",
       },
     }
-    const url = `Shop/${data}`
-    return axiosClient.get(url, null, config)
-  },
+    const url = "Shop/all"
+
+    return axiosClient.get(url, config)
+  }
 }
 
 export default shopApi

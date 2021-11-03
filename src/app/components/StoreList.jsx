@@ -5,7 +5,7 @@ const StoreList = ({ stores }) => {
   return (
     <Card.Group itemsPerRow={4}>
       {stores.map(s => (
-        <StoreCard store={s} />
+        <StoreCard store={s} key={s.shopId} />
       ))}
     </Card.Group>
   )
