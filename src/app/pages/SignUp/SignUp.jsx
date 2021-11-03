@@ -53,7 +53,6 @@ const Login = () => {
       customerApi
         .Register(form_data)
         .then(response => {
-          console.log(response.data)
           const { errorMessage } = response.data
           if (!errorMessage || errorMessage === null) {
             toastSuccess("Create account successfully")

@@ -1,17 +1,36 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button, Image } from "semantic-ui-react"
 import StoreInforField from "../../components/StoreInforField"
 import ModifyStoreModal from "./RightSideBar/ModifyStoreModal"
-import { generateStore } from "../../helpers/fake-data-helper"
+import { useSelector } from "react-redux"
+import shopApi from "../../api/shopApi"
+import { useHistory } from "react-router"
 
 const RightSideBar = () => {
-  const store = generateStore()
+  const [shop, setShop] = useState({})
 
-  const { id, image, link, name, address, phone } = store
+  const shopId = useSelector(state => state.SignIn).signInInfor.shopId
+
+  useEffect(() => {
+    const shopInfor = shopApi
+      .getShopInforById(shopId)
+      .then(response => {
+        setShop(response.data)
+      })
+      .catch(console.error())
+  }, [])
+
+  const { image, name, phoneNumber } = shop
+
+  const link = `http://localhost:3000/shop/${shopId}`
+
+  const imgSrc = `data:image/jpeg;base64,${image}`
+
   const modalRef = useRef(null)
+  const history = useHistory()
 
   const viewShopProfile = id => {
-    modalRef.current.open(id)
+    history.push("profile")
   }
 
   const share = () => {}
@@ -21,7 +40,7 @@ const RightSideBar = () => {
   return (
     <div className="admin-layout_side-bar">
       <Image
-        src={image}
+        src={imgSrc}
         fluid
         rounded
         onClick={viewShopProfile}
@@ -34,17 +53,16 @@ const RightSideBar = () => {
         label={link}
         link={link}
       ></StoreInforField>
-      <StoreInforField icon="hashtag" title="ID" label={id}></StoreInforField>
+      <StoreInforField
+        icon="hashtag"
+        title="ID"
+        label={shopId}
+      ></StoreInforField>
       <StoreInforField icon="home" title="Name" label={name}></StoreInforField>
       <StoreInforField
         icon="phone"
         title="Phone Number"
-        label={phone}
-      ></StoreInforField>
-      <StoreInforField
-        icon="map pin"
-        title="Address"
-        label={address}
+        label={phoneNumber}
       ></StoreInforField>
 
       <Button

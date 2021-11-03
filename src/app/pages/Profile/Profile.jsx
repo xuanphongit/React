@@ -21,9 +21,7 @@ const Profile = () => {
   const { toastSuccess, toastError } = useToast()
 
   const data = useSelector(state => state.SignIn)
-const { phoneNumber } = data.signInInfor
-   console.log(data)
-   console.log(phoneNumber)
+  const { phoneNumber } = data.signInInfor
 
   const UpdateInformation = () => {
     history.push("/admin")
@@ -31,18 +29,17 @@ const { phoneNumber } = data.signInInfor
 
   const submit = event => {
     var form_data = new FormData(document.getElementById("update-form"))
-      shopApi
-        .Update(form_data)
-        .then(response => {
-            toastSuccess("Update shop information successfully")
-            UpdateInformation()
-        })
-        .catch(error => {
-          if (error.response) {
-            toastError(error.response.data)
-          }
-        })
-    
+    shopApi
+      .Update(form_data)
+      .then(response => {
+        toastSuccess("Update shop information successfully")
+        UpdateInformation()
+      })
+      .catch(error => {
+        if (error.response) {
+          toastError(error.response.data)
+        }
+      })
   }
 
   const [file, setFile] = React.useState(null)
@@ -51,9 +48,8 @@ const { phoneNumber } = data.signInInfor
     setFile(e.target.files[0])
   }
 
-
-  const labelName = "Shop Number" 
-  const imageName = "Avatar"
+  const labelName = "Shop Name"
+  const imageName = "Logo"
 
   return (
     <Container className="auth-form">
@@ -81,10 +77,7 @@ const { phoneNumber } = data.signInInfor
 
               <Form.Field>
                 <label>New Phone Number</label>
-                <input
-                  placeholder="New Phone Number"
-                  name="NewPhoneNumber"
-                />
+                <input placeholder="New Phone Number" name="NewPhoneNumber" />
               </Form.Field>
 
               <div>

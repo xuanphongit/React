@@ -12,7 +12,7 @@ const ViewMenu = () => {
 
   const signInformation = useSelector(state => state.SignIn)
 
-  const viewOrder = id => {
+  const editItem = id => {
     modalRef.current.open(id)
   }
 
@@ -20,18 +20,20 @@ const ViewMenu = () => {
     modalRef.current.open()
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await shopApi.getShopInforById(
-          signInformation.signInInfor.shopId
-        )
-        setRowData(response.data.items)
-      } catch (error) {
-        console.log(error)
-      }
+  const fetchData = async () => {
+    try {
+      const response = await shopApi.getShopInforById(
+        signInformation.signInInfor.shopId
+      )
+      setRowData(response.data.items)
+    } catch (error) {
+      console.log(error)
     }
+  }
 
+
+
+  useEffect(() => {
     fetchData()
   }, [])
 
@@ -42,10 +44,10 @@ const ViewMenu = () => {
         addItem={() => addItem()}
       ></SectionHeader>
       {rowData && (
-        <MenuItemList items={rowData} viewOrder={viewOrder}></MenuItemList>
+        <MenuItemList items={rowData} editItem={editItem}></MenuItemList>
       )}
 
-      <MenuDetailModal ref={modalRef}></MenuDetailModal>
+      <MenuDetailModal ref={modalRef} refreshData={fetchData}></MenuDetailModal>
     </>
   )
 }
