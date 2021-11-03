@@ -1,6 +1,6 @@
 import axiosClient from "./axiosClient"
 
-const customerApi = {
+const shopApi = {
   Register(data) {
     const config = {
       headers: {
@@ -32,4 +32,4 @@ const customerApi = {
   },
 }
 
-export default customerApi
+export default shopApi
