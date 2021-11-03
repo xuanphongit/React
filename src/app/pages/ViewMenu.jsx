@@ -2,11 +2,16 @@ import MenuDetailModal from "./ViewMenu/MenuDetailModal"
 import MenuItemList from "../components/MenuItemList"
 import { generateMenu } from "../helpers/fake-data-helper"
 import SectionHeader from "../components/SectionHeader"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useSelector } from "react-redux"
+import shopApi from "../api/shopApi"
+const { toastSuccess, toastError } = useToast()
 
 const ViewMenu = () => {
-  const [rowData] = useState(generateMenu())
+  const [rowData, setRowData] = useState([])
   const modalRef = useRef(null)
+
+  const signInformation = useSelector(state => state.SignIn)
 
   const viewOrder = id => {
     modalRef.current.open(id)
@@ -15,6 +20,21 @@ const ViewMenu = () => {
   const addItem = () => {
     modalRef.current.open()
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await shopApi.getShopInforById(
+          signInformation.signInInfor.shopId
+        )
+        setRowData(response.data.items)
+      } catch (error) {
+        toastError(error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <>
