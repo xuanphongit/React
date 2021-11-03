@@ -5,8 +5,6 @@ import SectionHeader from "../components/SectionHeader"
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import shopApi from "../api/shopApi"
-import useToast from "./../hooks/useToast"
-const { toastError } = useToast()
 
 const ViewMenu = () => {
   const [rowData, setRowData] = useState([])
@@ -30,7 +28,7 @@ const ViewMenu = () => {
         )
         setRowData(response.data.items)
       } catch (error) {
-        toastError(error)
+        console.log(error)
       }
     }
 
