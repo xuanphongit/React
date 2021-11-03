@@ -1,9 +1,24 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import StoreList from "../components/StoreList"
-import { generateStores } from "../helpers/fake-data-helper"
+import shopApi from "../api/shopApi"
+import useToast from "../hooks/useToast"
 
 const DashboardGuest = () => {
-  const [stores] = useState(generateStores())
+  const { toastError } = useToast()
+  const [stores, setStores] = useState([])
+
+  useEffect(() => {
+    shopApi
+      .GetAll()
+      .then(response => {
+        stores = setStores(response.data)
+      })
+      .catch(error => {
+        if (error.response) {
+          toastError(error.response.data)
+        }
+      })
+  }, [])
 
   return (
     <>

@@ -30,6 +30,17 @@ const shopApi = {
     const url = "Shop"
     return axiosClient.put(url, data, config)
   },
+
+  GetAll(){
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+    const url = "Shop/all"
+
+    return axiosClient.get(url, config)
+  }
 }
 
 export default shopApi
