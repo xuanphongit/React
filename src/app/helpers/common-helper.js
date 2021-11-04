@@ -9,3 +9,11 @@ export const dataURIToBlob = dataURI => {
 
   return new Blob([ia], { type: mimeString })
 }
+
+
+export const groupBy = function (xs, key) {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {})
+}

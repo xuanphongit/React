@@ -40,7 +40,7 @@ const RightSideBar = () => {
   return (
     <div className="admin-layout_side-bar">
       <Image
-        src={imgSrc}
+        src={image ? imgSrc : "https://dummyimage.com/900x900/aaaaaa/eeeeee.png&text=Logo+Image"}
         fluid
         rounded
         onClick={viewShopProfile}

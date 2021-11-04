@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import storage from 'redux-persist/lib/storage';
+
+const initialState = { isShop: false, signInInfor: {} }
 
 const signInSlice = createSlice({
   name: "SignIn",
-  initialState: { isShop: false, signInInfor: {} },
+  initialState: initialState,
   reducers: {
     setIsShopFlag: (state, action) => {
       state.isShop = action.payload
@@ -11,9 +14,14 @@ const signInSlice = createSlice({
     setSignInInformation: (state, action) => {
       state.signInInfor = action.payload
     },
+
+    clearStore: (state) => { 
+      storage.removeItem('persist:root')
+      state = initialState
+    }
   },
 })
 
 const { actions, reducer } = signInSlice
-export const { setIsShopFlag, setSignInInformation } = actions
+export const { setIsShopFlag, setSignInInformation, clearStore } = actions
 export default reducer

@@ -1,22 +1,65 @@
 import { useParams } from "react-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import MenuItemList from "./../components/MenuItemList"
 import { Grid, Header } from "semantic-ui-react"
 import Cart from "../components/Cart"
-import { generateCart, generateMenu } from "../helpers/fake-data-helper"
 import { useSelector } from "react-redux"
+import shopApi from "../api/shopApi"
+import cartApi from "../api/cartApi"
+import useToast from "../hooks/useToast"
+
+
 
 const Store = () => {
-  const menuFake = generateMenu()
-  const cartFake = generateCart(menuFake)
-
+  const { toastError } = useToast()
   const { id } = useParams()
-  const [items] = useState(menuFake)
-  const [cart] = useState(cartFake)
+  const [items, setItems] = useState([])
+  const [cart, setCart] = useState({})
+  const userInfor = useSelector(state => state.SignIn)
+  const customerId = userInfor.signInInfor.customerId
+  const postData = {
+    ShopId: id,
+    CustomerId: customerId
+  }
 
-  const addToCart = id => {}
+  const RefreshCart = () => {
+    // get existed cart, if not existed => create new cart
+    customerId && cartApi.GetExistCart(postData).then(response => {
+      if (response && response.data) {
+        setCart(response.data)
+      } else {
+        cartApi.CreateCart(postData).then(response => {
+          setCart(response.data)
+        })
+      }
+    }).catch(error => {
+      toastError(error)
+    })
+  }
 
-  const userInfor = useSelector(state=> state.SignIn)
+  useEffect(() => {
+
+    // get items in shop
+    shopApi.getShopInforById(id).then(response => {
+      setItems(response.data.items)
+    }).catch(error => {
+      toastError(error)
+    })
+
+    RefreshCart()
+  }, [])
+
+  const addToCart = id => {
+    cartApi.AddItemToCart({
+      itemId: id,
+      customerId: customerId,
+      cartId: cart.cartId
+    }).then(response => {
+      RefreshCart()
+    }).catch(error => {
+      toastError(error)
+    })
+  }
 
   return (
     <>

@@ -3,15 +3,15 @@ import { generateKey } from "../helpers/crypto-helper"
 import CartItem from "./CartItem"
 
 const CartItemGroup = ({ group }) => {
-  const { userName, items } = group
+  
   return (
     <Segment raised>
-      <Header size={"small"}>{userName}</Header>
+      <Header size={"small"}>{group[0].customerName}</Header>
       <Container>
         <Grid>
-          {items &&
-            items.map(item => (
-              <CartItem key={generateKey()} item={item}></CartItem>
+          {group &&
+            group.map(group => (
+              <CartItem key={generateKey()} item={group}></CartItem>
             ))}
         </Grid>
       </Container>

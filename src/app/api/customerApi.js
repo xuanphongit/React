@@ -11,6 +11,16 @@ const customerApi = {
     return axiosClient.post(url, data, config)
   },
 
+  Update(data) {
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    }
+    const url = "Customer"
+    return axiosClient.put(url, data, config)
+  },
+
   Login(data) {
     const config = {
       headers: {
