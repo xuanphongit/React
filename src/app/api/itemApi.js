@@ -34,11 +34,12 @@ const itemApi = {
   Delete(data) {
     const config = {
       headers: {
-        "content-type": "application/json",
+        "content-type": "application/json-patch+json",
       },
+      data: data,
     }
     const url = "Item"
-    return axiosClient.delete(url, data, config)
+    return axiosClient.delete(url, config)
   },
 
   ActiveItem(data) {
