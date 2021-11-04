@@ -8,7 +8,7 @@ const MenuItem = ({ item, editItem, addToCart }) => {
       <List.Content>
         <Grid>
           <Grid.Column width={4}>
-            <Image rounded src={`data:image/jpeg;base64,${image}`} />
+            <Image rounded src={image ? `data:image/jpeg;base64,${image}` : "https://dummyimage.com/900x900/ecf0f1/aaa"} />
           </Grid.Column>
           <Grid.Column width={10}>
             <List.Header as="a">{name}</List.Header>

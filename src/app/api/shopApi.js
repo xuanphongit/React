@@ -41,7 +41,7 @@ const shopApi = {
     return axiosClient.get(url, null, config)
   },
 
-  GetAll(){
+  GetAll() {
     const config = {
       headers: {
         "content-type": "application/json",
@@ -50,6 +50,17 @@ const shopApi = {
     const url = "Shop/all"
 
     return axiosClient.get(url, config)
+  },
+
+  Delete(data) {
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+    const url = "Shop/delete"
+
+    return axiosClient.delete(url, data, config)
   }
 }
 

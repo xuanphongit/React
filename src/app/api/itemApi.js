@@ -30,6 +30,26 @@ const itemApi = {
     const url = "Item/create"
     return axiosClient.post(url, data, config)
   },
+
+  Delete(data) {
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+    const url = "Item"
+    return axiosClient.delete(url, data, config)
+  },
+
+  ActiveItem(data) {
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+    const url = "Item/active"
+    return axiosClient.put(url, data, config)
+  },
 }
 
 export default itemApi

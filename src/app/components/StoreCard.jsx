@@ -7,7 +7,7 @@ const StoreCard = ({ store }) => {
 
   return (
     <Card>
-      <Image src={imgSrc} wrapped ui={false} />
+      <Image src={image ? imgSrc : "https://dummyimage.com/900x900/ecf0f1/aaa"} wrapped ui={false} />
       <Card.Content>
         <Card.Header>
           <a href={link}>{name}</a>

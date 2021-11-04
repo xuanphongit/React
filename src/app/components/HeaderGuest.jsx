@@ -1,10 +1,18 @@
 import { useState } from "react"
+import { useDispatch } from "react-redux"
 import { useHistory } from "react-router"
 import { Icon, Image, Menu } from "semantic-ui-react"
+import { clearStore } from "../pages/SignIn/signInSlice"
 
 const HeaderGuest = () => {
   const history = useHistory()
   const [activeItem] = useState(null)
+  const dispatch = useDispatch()
+
+  const signOut = () => {
+    dispatch(clearStore())
+    history.push("/sign-in")
+  }
 
   return (
     <Menu className="header" pointing secondary widths={5}>
@@ -22,7 +30,7 @@ const HeaderGuest = () => {
       <Menu.Item
         name="logoff"
         active={activeItem === "logoff"}
-        onClick={() => history.push("/sign-in")}
+        onClick={() => signOut()}
       >
         <Icon size={"small"} name="log out" /> Sign Out
       </Menu.Item>
