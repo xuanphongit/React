@@ -1,15 +1,14 @@
+import { useSelector } from "react-redux"
 import { Grid, Header, Icon } from "semantic-ui-react"
 import { formatCurrency } from "./../helpers/number-helper"
 
-const CartItem = ({ item }) => {
-  const { itemName, price, amount } = item
+const CartItem = ({ item, deleteItem }) => {
+  const userInfor = useSelector(state => state.SignIn)
+  const currentCustomerId = userInfor.signInInfor.customerId
+
+  const { itemName, price, amount, itemId, customerId } = item
   return (
     <Grid.Row columns={4}>
-      <Grid.Column width={1}>
-        <span className="cart-remove">
-          <Icon name="delete" color="red" />
-        </span>
-      </Grid.Column>
       <Grid.Column width={8}>
         <Header size="tiny" className="cart-item-name">
           {itemName}
@@ -23,6 +22,13 @@ const CartItem = ({ item }) => {
           {formatCurrency(price * amount)}
         </Header>
       </Grid.Column>
+      {currentCustomerId === customerId && (
+        <Grid.Column width={1}>
+          <span className="cart-remove" onClick={() => deleteItem(itemId)}>
+            <Icon name="delete" color="red" />
+          </span>
+        </Grid.Column>
+      )}
     </Grid.Row>
   )
 }

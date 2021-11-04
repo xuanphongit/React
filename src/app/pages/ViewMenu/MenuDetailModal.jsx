@@ -99,6 +99,7 @@ const MenuDetailModal = forwardRef((props, ref) => {
                     placeholder="Price"
                     defaultValue={price}
                     name="Price"
+                    type="number"
                   />
                 </Form.Field>
                 <Form.Field>

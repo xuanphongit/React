@@ -1,10 +1,9 @@
 import { Button, Divider, Header, Label, List } from "semantic-ui-react"
-import { generateKey } from "../helpers/crypto-helper"
 import CartItemGroup from "./CartItemGroup"
 import { formatCurrency, formatPercentage } from "./../helpers/number-helper"
 import { groupBy } from "../helpers/common-helper"
 
-const Cart = ({ cart }) => {
+const Cart = ({ cart, deleteItem }) => {
   const { cartId, shopId, customerId, itemsInCart, totalPrice } = cart
 
   let customerIds = []
@@ -14,7 +13,7 @@ const Cart = ({ cart }) => {
     customerIds = [...new Set(itemsInCart.map(item => item.customerId))]
 
     // group items by customer id
-    group = groupBy(itemsInCart, 'customerId');
+    group = groupBy(itemsInCart, "customerId")
   }
 
   return (
@@ -39,7 +38,11 @@ const Cart = ({ cart }) => {
       <Divider></Divider>
       {customerIds &&
         customerIds.map(customerId => (
-          <CartItemGroup key={generateKey()} group={group[customerId]}></CartItemGroup>
+          <CartItemGroup
+            key={customerId}
+            group={group[customerId]}
+            deleteItem={deleteItem}
+          ></CartItemGroup>
         ))}
     </>
   )
