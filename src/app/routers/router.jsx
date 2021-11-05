@@ -29,9 +29,9 @@ const Router = () => {
           component={ViewOrders}
         />
         <Route path="/Home" exact component={Home} />
-        <Route path="/Cart/:cartId/:shopId" exact component={Store} />
         <AdminLayoutRoute exact path="/admin/view-menu" component={ViewMenu} />
         <CustomerLayoutRoute exact path="/store" component={Stores} />
+        <CustomerLayoutRoute path="/Cart/:cartId/:shopId" exact component={Store} />
         <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
         <DefaultLayoutRoute exact path="/sign-in" component={SignIn} />
         <DefaultLayoutRoute exact path="/sign-up" component={SignUp} />

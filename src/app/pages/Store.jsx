@@ -7,77 +7,124 @@ import { useSelector } from "react-redux"
 import shopApi from "../api/shopApi"
 import cartApi from "../api/cartApi"
 import useToast from "../hooks/useToast"
+import { startConnection } from "../signalr/signalr"
+import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
 
 const Store = () => {
   const { toastError } = useToast()
   const { shopId, cartId } = useParams()
   const [items, setItems] = useState([])
-  const [shopName, setshopName] = useState('')
+  const [shopName, setshopName] = useState("")
   const [cart, setCart] = useState({})
   const [isHost, setIsHost] = useState(false)
   const userInfor = useSelector(state => state.SignIn)
   const customerId = userInfor.signInInfor.customerId
+  const [currentCartId, setCartId] = useState(0)
   const postData = {
     ShopId: shopId,
     CustomerId: customerId,
   }
 
-  const RefreshCart = () => {
+  useEffect(() => {
+    // get items in shop
+    loadShop()
+
+    // get cart
+    loadCart()
+  }, [])
+
+  const loadCart = () => {
+    // guest
     if (cartId) {
       setIsHost(false)
+      setCartId(cartId)
       cartApi
         .GetCartById(cartId)
         .then(response => {
           setCart(response.data)
+          connectCartHub(cartId)
         })
         .catch(error => {
           toastError(error)
         })
-      return
-    }
-    // get existed cart, if not existed => create new cart
-    setIsHost(true)
-    customerId &&
-      cartApi
-        .GetExistCart(postData)
-        .then(response => {
-          if (response && response.data) {
-            setCart(response.data)
-          } else {
-            cartApi.CreateCart(postData).then(response => {
+    } else {
+      // host
+      setIsHost(true)
+      customerId &&
+        cartApi
+          .GetExistCart(postData)
+          .then(response => {
+            if (response && response.data) {
               setCart(response.data)
-            })
-          }
-        })
-        .catch(error => {
-          toastError(error)
-        })
+              setCartId(response.data.cartId)
+              connectCartHub(response.data.cartId)
+            } else {
+              cartApi.CreateCart(postData).then(response => {
+                setCart(response.data)
+                setCartId(response.data.cartId)
+                connectCartHub(response.data.cartId)
+              })
+            }
+          })
+          .catch(error => {
+            toastError(error)
+          })
+    }
   }
 
-  useEffect(() => {
-    // get items in shop
+  const loadShop = () => {
     shopApi
-      .getShopInforById(shopId)
-      .then(response => {
-        setItems(response.data.items.filter(a => a.isActive))
-        setshopName(response.data.name)
-      })
-      .catch(error => {
-        toastError(error)
-      })
+    .getShopInforById(shopId)
+    .then(response => {
+      setItems(response.data.items.filter(a => a.isActive))
+      setshopName(response.data.name)
+      connectShopHub(shopId)
+    })
+    .catch(error => {
+      toastError(error)
+    })
+  }
 
-    RefreshCart()
-  }, [])
+  const [cartHubConnection, setCartHubConnection] = useState(null)
+  const [shopHubConnection, setShopHubConnection] = useState(null)
+
+  const connectCartHub = cartId => {
+    if (!cartHubConnection) {
+      const cartHub = `${HubConnectionUrl.CartHub}${cartId}`
+      const hubConnection = startConnection(cartHub)
+      setCartHubConnection(hubConnection)
+    }
+
+    cartHubConnection.on(HubMethod.AddItemToCart, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
+
+    cartHubConnection.on(HubMethod.RemoveItemFromCart, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
+  }
+
+  const connectShopHub = shopId => {
+    if (!shopHubConnection) {
+      const shopHub = `${HubConnectionUrl.ShopHub}${shopId}`
+      const hubConnection = startConnection(shopHub)
+      setShopHubConnection(hubConnection)
+    }
+  }
 
   const deleteItem = id => {
     cartApi
       .RemoveItemFromCart({
         itemId: id,
         customerId: customerId,
-        cartId: cart.cartId,
+        cartId: currentCartId,
       })
       .then(response => {
-        RefreshCart()
+        loadCart()
       })
       .catch(error => {
         toastError(error)
@@ -89,10 +136,10 @@ const Store = () => {
       .AddItemToCart({
         itemId: id,
         customerId: customerId,
-        cartId: cart.cartId,
+        cartId: currentCartId,
       })
       .then(response => {
-        RefreshCart()
+        loadCart()
       })
       .catch(error => {
         toastError(error)
