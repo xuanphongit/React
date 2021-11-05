@@ -57,13 +57,20 @@ const Login = () => {
       customerApi
         .Login(data)
         .then(response => {
-          toastSuccess("Log in successfully")
+          const { customerId } = response.data
 
-          dispatch(setIsShopFlag(false))
+          if (customerId != null) {
+            toastSuccess("Log in successfully")
 
-          const actionSetShopId = setSignInInformation(response.data)
-          dispatch(actionSetShopId)
-          history.push("/")
+            dispatch(setIsShopFlag(false))
+
+            const actionSetShopId = setSignInInformation(response.data)
+
+            dispatch(actionSetShopId)
+            history.push("/")
+          } else {
+            toastError("Customer account is not exits")
+          }
         })
         .catch(error => {
           if (error.response) {

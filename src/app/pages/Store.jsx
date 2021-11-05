@@ -13,13 +13,19 @@ import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
 const Store = () => {
   const { toastError } = useToast()
   const { shopId, cartId } = useParams()
+
   const [items, setItems] = useState([])
   const [shopName, setshopName] = useState("")
   const [cart, setCart] = useState({})
   const [isHost, setIsHost] = useState(false)
+  const [currentCartId, setCartId] = useState(0)
+
+  const [cartHubConnection, setCartHubConnection] = useState(null)
+  const [shopHubConnection, setShopHubConnection] = useState(null)
+
   const userInfor = useSelector(state => state.SignIn)
   const customerId = userInfor.signInInfor.customerId
-  const [currentCartId, setCartId] = useState(0)
+
   const postData = {
     ShopId: shopId,
     CustomerId: customerId,
@@ -74,19 +80,16 @@ const Store = () => {
 
   const loadShop = () => {
     shopApi
-    .getShopInforById(shopId)
-    .then(response => {
-      setItems(response.data.items.filter(a => a.isActive))
-      setshopName(response.data.name)
-      connectShopHub(shopId)
-    })
-    .catch(error => {
-      toastError(error)
-    })
+      .getShopInforById(shopId)
+      .then(response => {
+        setItems(response.data.items.filter(a => a.isActive))
+        setshopName(response.data.name)
+        connectShopHub(shopId)
+      })
+      .catch(error => {
+        toastError(error)
+      })
   }
-
-  const [cartHubConnection, setCartHubConnection] = useState(null)
-  const [shopHubConnection, setShopHubConnection] = useState(null)
 
   const connectCartHub = cartId => {
     if (!cartHubConnection) {
@@ -94,18 +97,19 @@ const Store = () => {
       const hubConnection = startConnection(cartHub)
       setCartHubConnection(hubConnection)
     }
+    if (cartHubConnection) {
+      cartHubConnection.on(HubMethod.AddItemToCart, response => {
+        if (response && response.customerId != customerId) {
+          loadCart()
+        }
+      })
 
-    cartHubConnection.on(HubMethod.AddItemToCart, response => {
-      if (response && response.customerId != customerId) {
-        loadCart()
-      }
-    })
-
-    cartHubConnection.on(HubMethod.RemoveItemFromCart, response => {
-      if (response && response.customerId != customerId) {
-        loadCart()
-      }
-    })
+      cartHubConnection.on(HubMethod.RemoveItemFromCart, response => {
+        if (response && response.customerId != customerId) {
+          loadCart()
+        }
+      })
+    }
   }
 
   const connectShopHub = shopId => {
