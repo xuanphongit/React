@@ -3,7 +3,7 @@ import CartItemGroup from "./CartItemGroup"
 import { formatCurrency, formatPercentage } from "./../helpers/number-helper"
 import { groupBy } from "../helpers/common-helper"
 
-const Cart = ({ cart, deleteItem }) => {
+const Cart = ({ cart, deleteItem, submitCart }) => {
   const { cartId, shopId, customerId, itemsInCart, totalPrice } = cart
 
   let customerIds = []
@@ -34,6 +34,9 @@ const Cart = ({ cart, deleteItem }) => {
         icon="thumbs up outline"
         color="green"
         style={{ marginTop: 15, width: "100%" }}
+        onClick={() => {
+          submitCart()
+        }}
       />
       <Divider></Divider>
       {customerIds &&
