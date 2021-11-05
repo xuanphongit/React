@@ -1,25 +1,25 @@
-import * as signalR from "@microsoft/signalr";
+import * as signalR from "@microsoft/signalr"
 
-export const getHubConnection = (hubUrl) => {
+export const getHubConnection = async (hubUrl, callback) => {
   // Builds the SignalR connection, mapping it to hubUrl
   const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl(hubUrl, {
-      withCredentials: false
+      withCredentials: false,
     })
     .configureLogging(signalR.LogLevel.Information)
-    .build();
+    .build()
+
+  if (callback) callback(hubConnection)
+
+  await startConnection(hubConnection);
 
   return hubConnection
 }
 
-export const startConnection = (hubUrl) => {
-  const hubConnection = getHubConnection(hubUrl)
-
+export const startConnection = async (hubConnection) => {
   // Starts the SignalR connection
-  hubConnection
+  await hubConnection
     .start()
-    .then(() => console.log('Connection started!'))
-    .catch(err => console.log('Connection Fail' + err));
-
-  return hubConnection
+    .then(() => console.log("Connection started!"))
+    .catch(err => console.log("Connection Fail" + err))
 }
