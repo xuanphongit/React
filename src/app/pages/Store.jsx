@@ -32,8 +32,6 @@ const Store = () => {
     ShopId: shopId,
     CustomerId: customerId,
   }
-  const [cartHubConnection, setCartHubConnection] = useState(null)
-  const [shopHubConnection, setShopHubConnection] = useState(null)
 
   useEffect(() => {
     // get items in shop
@@ -44,6 +42,7 @@ const Store = () => {
   }, [])
 
   const loadCart = () => {
+    console.log("load cart")
     // guest
     if (cartId) {
       setIsHost(false)
@@ -124,7 +123,12 @@ const Store = () => {
 
     cartHubConnection.on(HubMethod.SubmitItems, response => {
       if (response && response.customerId != customerId) {
-        console.log(1)
+        loadCart()
+      }
+    })
+
+    cartHubConnection.on(HubMethod.UnsubmitItems, response => {
+      if (response && response.customerId != customerId) {
         loadCart()
       }
     })
@@ -161,7 +165,12 @@ const Store = () => {
         cartId: currentCartId,
       })
       .then(response => {
-        loadCart()
+        const { itemId, errorMessage } = response.data
+        if (itemId) {
+          loadCart()
+        } else {
+          toastError(errorMessage)
+        }
       })
       .catch(error => {
         toastError(error)
@@ -181,22 +190,50 @@ const Store = () => {
       cartApi
         .SubmitItemsInCart(postData)
         .then(response => {
-          if (isHost) {
-            var orederRequest = {
-              cartId: currentCartId,
-              deliveryInformation: Constants.OrderStatus.Confirmed,
-            }
-            // place new order
-            orderApi.PlacedNewOrder(orederRequest).then(response => {
-              // refresh cart
-              loadCart()
-            })
-          }
+          loadCart()
         })
         .catch(error => {
           toastError(error)
         })
     }
+  }
+
+  const unSubmitCart = () => {
+    // unsubmit items
+    const { itemsInCart } = cart
+
+    if (itemsInCart && itemsInCart.length > 0) {
+      const postData = {
+        items: itemsInCart.filter(a => a.customerId == customerId),
+        customerId: customerId,
+        cartId: currentCartId,
+      }
+      cartApi
+        .UnSubmitItemsIncart(postData)
+        .then(response => {
+          loadCart()
+        })
+        .catch(error => {
+          toastError(error)
+        })
+    }
+  }
+
+  const placeNewOrder = () => {
+    var orederRequest = {
+      cartId: currentCartId,
+      deliveryInformation: Constants.OrderStatus.Confirmed,
+    }
+    // place new order
+    orderApi
+      .PlacedNewOrder(orederRequest)
+      .then(response => {
+        // refresh cart
+        loadCart()
+      })
+      .catch(error => {
+        toastError(error)
+      })
   }
 
   return (
@@ -213,6 +250,10 @@ const Store = () => {
             cart={cart}
             deleteItem={deleteItem}
             submitCart={submitCart}
+            isHost={isHost}
+            currentCustomerId={customerId}
+            unSubmitCart={unSubmitCart}
+            placeNewOrder={placeNewOrder}
           ></Cart>
         </Grid.Column>
       </Grid>

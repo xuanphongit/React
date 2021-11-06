@@ -18,7 +18,7 @@ const Router = () => {
     <BrowserRouter>
       <Switch>
         <Route path="/" exact>
-          <Redirect to="/store" />
+          <Redirect to="/home" />
         </Route>
         <Route path="/admin" exact>
           <Redirect to="/admin/view-orders" />
@@ -31,7 +31,11 @@ const Router = () => {
         <Route path="/Home" exact component={Home} />
         <AdminLayoutRoute exact path="/admin/view-menu" component={ViewMenu} />
         <CustomerLayoutRoute exact path="/store" component={Stores} />
-        <CustomerLayoutRoute path="/Cart/:cartId/:shopId" exact component={Store} />
+        <CustomerLayoutRoute
+          path="/Cart/:cartId/:shopId"
+          exact
+          component={Store}
+        />
         <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
         <DefaultLayoutRoute exact path="/sign-in" component={SignIn} />
         <DefaultLayoutRoute exact path="/sign-up" component={SignUp} />

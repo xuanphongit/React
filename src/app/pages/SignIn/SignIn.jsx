@@ -67,7 +67,7 @@ const Login = () => {
             const actionSetShopId = setSignInInformation(response.data)
 
             dispatch(actionSetShopId)
-            history.push("/")
+            history.push("/store")
           } else {
             toastError("Customer account is not exits")
           }

@@ -24,9 +24,13 @@ const CartItem = ({ item, deleteItem }) => {
       </Grid.Column>
       {currentCustomerId === customerId && (
         <Grid.Column width={1}>
-          <span className="cart-remove" onClick={() => deleteItem(itemId)}>
-            <Icon name="delete" color="red" />
-          </span>
+          {/* <span className="cart-remove" onClick={() => deleteItem(itemId)}> */}
+            <Icon
+              name="delete"
+              color="red"
+              onClick={() => deleteItem(itemId)}
+            />
+          {/* </span> */}
         </Grid.Column>
       )}
     </Grid.Row>
