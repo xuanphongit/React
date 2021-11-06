@@ -7,7 +7,7 @@ import { useSelector } from "react-redux"
 import shopApi from "../api/shopApi"
 import cartApi from "../api/cartApi"
 import useToast from "../hooks/useToast"
-import { startConnection } from "../signalr/signalr"
+import { getHubConnection } from "../signalr/signalr"
 import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
 
 const Store = () => {
@@ -30,6 +30,8 @@ const Store = () => {
     ShopId: shopId,
     CustomerId: customerId,
   }
+  const [cartHubConnection, setCartHubConnection] = useState(null)
+  const [shopHubConnection, setShopHubConnection] = useState(null)
 
   useEffect(() => {
     // get items in shop
@@ -94,28 +96,29 @@ const Store = () => {
   const connectCartHub = cartId => {
     if (!cartHubConnection) {
       const cartHub = `${HubConnectionUrl.CartHub}${cartId}`
-      const hubConnection = startConnection(cartHub)
+      const hubConnection = getHubConnection(cartHub, cartNotifyHandle)
       setCartHubConnection(hubConnection)
     }
-    if (cartHubConnection) {
-      cartHubConnection.on(HubMethod.AddItemToCart, response => {
-        if (response && response.customerId != customerId) {
-          loadCart()
-        }
-      })
+  }
 
-      cartHubConnection.on(HubMethod.RemoveItemFromCart, response => {
-        if (response && response.customerId != customerId) {
-          loadCart()
-        }
-      })
-    }
+  const cartNotifyHandle = cartHubConnection => {
+    cartHubConnection.on(HubMethod.AddItemToCart, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
+
+    cartHubConnection.on(HubMethod.RemoveItemFromCart, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
   }
 
   const connectShopHub = shopId => {
     if (!shopHubConnection) {
       const shopHub = `${HubConnectionUrl.ShopHub}${shopId}`
-      const hubConnection = startConnection(shopHub)
+      const hubConnection = getHubConnection(shopHub)
       setShopHubConnection(hubConnection)
     }
   }
