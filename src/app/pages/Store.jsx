@@ -6,9 +6,11 @@ import Cart from "../components/Cart"
 import { useSelector } from "react-redux"
 import shopApi from "../api/shopApi"
 import cartApi from "../api/cartApi"
+import orderApi from "../api/orderApi"
 import useToast from "../hooks/useToast"
 import { getHubConnection } from "../signalr/signalr"
 import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
+import { Constants } from "../helpers/constants"
 
 const Store = () => {
   const { toastError } = useToast()
@@ -113,6 +115,19 @@ const Store = () => {
         loadCart()
       }
     })
+
+    cartHubConnection.on(HubMethod.NewOrder, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
+
+    cartHubConnection.on(HubMethod.SubmitItems, response => {
+      if (response && response.customerId != customerId) {
+        console.log(1)
+        loadCart()
+      }
+    })
   }
 
   const connectShopHub = shopId => {
@@ -153,6 +168,37 @@ const Store = () => {
       })
   }
 
+  const submitCart = () => {
+    // submit items
+    const { itemsInCart } = cart
+
+    if (itemsInCart && itemsInCart.length > 0) {
+      const postData = {
+        items: itemsInCart.filter(a => a.customerId == customerId),
+        customerId: customerId,
+        cartId: currentCartId,
+      }
+      cartApi
+        .SubmitItemsInCart(postData)
+        .then(response => {
+          if (isHost) {
+            var orederRequest = {
+              cartId: currentCartId,
+              deliveryInformation: Constants.OrderStatus.Confirmed,
+            }
+            // place new order
+            orderApi.PlacedNewOrder(orederRequest).then(response => {
+              // refresh cart
+              loadCart()
+            })
+          }
+        })
+        .catch(error => {
+          toastError(error)
+        })
+    }
+  }
+
   return (
     <>
       <Header size="medium">{shopName}</Header>
@@ -163,7 +209,11 @@ const Store = () => {
           )}
         </Grid.Column>
         <Grid.Column width={4}>
-          <Cart cart={cart} deleteItem={deleteItem}></Cart>
+          <Cart
+            cart={cart}
+            deleteItem={deleteItem}
+            submitCart={submitCart}
+          ></Cart>
         </Grid.Column>
       </Grid>
     </>
