@@ -4,14 +4,22 @@ import { Button, Grid, Modal } from "semantic-ui-react"
 import dayjs from "dayjs"
 import { AgGridReact } from "ag-grid-react/lib/agGridReact"
 import OrderInforField from "./../../components/OrderInforField"
-
+import orderApi from "../../api/orderApi"
 const OrderDetailModal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
   const [order] = useState(generateOrders())
+  const [orderInfor, setOrderInfor] = useState({})
+  const [orderId, setorderId] = useState({})
 
   useImperativeHandle(ref, () => ({
-    open() {
+    open(orderId) {
+      console.log(orderId)
+
       setIsOpen(true)
+      setorderId(orderId)
+      orderApi.GetOrder(orderId).then(response => {
+        setOrderInfor(response.data)
+      })
     },
   }))
 
@@ -36,7 +44,7 @@ const OrderDetailModal = forwardRef((props, ref) => {
 
   const [rowData] = useState(generateItems())
 
-  const { id, orderNumber, customerName, customerPhone, orderTime } = order
+  const { orderNumber, customerName, customerPhone, orderTime } = order
 
   return (
     <Modal
@@ -44,7 +52,7 @@ const OrderDetailModal = forwardRef((props, ref) => {
       onOpen={() => setIsOpen(true)}
       open={isOpen}
     >
-      <Modal.Header>{`Order #${id}`}</Modal.Header>
+      <Modal.Header>{`Order #${orderId}`}</Modal.Header>
       <Modal.Content image>
         <Modal.Description>
           <div className="order-info">
