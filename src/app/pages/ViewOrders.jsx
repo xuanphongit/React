@@ -53,11 +53,16 @@ const ViewOrders = () => {
         },
       },
       {
-        field: "action",
+        field: "Action",
         pinned: "right",
         cellRenderer: "actionCellRenderer",
-        cellRendererParams: {
-          onViewOrder: Id => viewOrder(Id),
+        cellRendererParams(params) {
+          return {
+            onViewOrder: viewOrder,
+            data: {
+              id: params.data.orderId,
+            },
+          }
         },
       },
     ],
@@ -78,7 +83,6 @@ const ViewOrders = () => {
   const modalRef = useRef(null)
 
   const viewOrder = orderId => {
-    console.log(orderId)
     modalRef.current.open(orderId)
   }
 

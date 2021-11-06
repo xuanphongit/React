@@ -24,7 +24,6 @@ const ViewMenu = () => {
 const data = { ShopId: signInformation.signInInfor.shopId }
   const deleteItem = id => {
     data.ItemId = id
-    console.log(data)
     itemApi
       .Delete(data)
       .then(response => {

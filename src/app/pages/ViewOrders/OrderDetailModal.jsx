@@ -13,8 +13,6 @@ const OrderDetailModal = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     open(orderId) {
-      console.log(orderId)
-
       setIsOpen(true)
       setorderId(orderId)
       orderApi.GetOrder(orderId).then(response => {
