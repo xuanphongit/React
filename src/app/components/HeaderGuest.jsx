@@ -29,7 +29,7 @@ const HeaderGuest = () => {
         <Icon size={"small"} name="user" /> Profile
       </Menu.Item>
 
-      <Menu.Item onClick={() => history.push("/store")}>
+      <Menu.Item onClick={() => history.push("/history")}>
         History
         <i className=" small history icon"></i>
       </Menu.Item>

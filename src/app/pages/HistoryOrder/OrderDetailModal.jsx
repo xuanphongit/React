@@ -3,14 +3,14 @@ import dayjs from "dayjs"
 import { forwardRef, useImperativeHandle, useMemo, useState } from "react"
 import { Button, Dropdown, Modal } from "semantic-ui-react"
 import orderApi from "../../api/orderApi"
+import { Constants } from "../../helpers/constants"
 
-const OrderDetailModal = forwardRef((props, ref) => {
+const HistoryOrderDetailModal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
   const [orderInfor, setOrderInfor] = useState({})
   const [rowData, setRowData] = useState([])
   const [statusOrder, setstatusOrder] = useState("")
   const [orderId, setOrderId] = useState("")
-  const { changeOrderStatus, cancelOrder } = props
 
   useImperativeHandle(ref, () => ({
     open(orderId) {
@@ -48,13 +48,6 @@ const OrderDetailModal = forwardRef((props, ref) => {
     }),
     []
   )
-
-  const options = [
-    { key: 0, text: "Confirmed", value: "Confirmed" },
-    { key: 1, text: "Sent To Kitchen", value: "Sent To Kitchen" },
-    { key: 2, text: "Ready for Pickup", value: "Ready for Pickup" },
-    { key: 3, text: "Delivered", value: "Delivered" },
-  ]
 
   const { orderTime, totalPrice, customerId } = orderInfor
 
@@ -104,38 +97,78 @@ const OrderDetailModal = forwardRef((props, ref) => {
           </div>
         </div>
       </div>
+      <div className="ui horizontal divider"> Progress</div>
+      <div className="ui ordered steps">
+        <div
+          className={
+            [
+              Constants.OrderStatus.Confirmed,
+              Constants.OrderStatus.SentToKitchen,
+              Constants.OrderStatus.ReadyforPickup,
+              Constants.OrderStatus.Delivered,
+            ].includes(statusOrder)
+              ? "completed step"
+              : "active step"
+          }
+        >
+          <div className="content">
+            <div className="title">Confirmed</div>
+            <div className="description">Order confirmed</div>
+          </div>
+        </div>
+        <div
+          className={
+            [
+              Constants.OrderStatus.SentToKitchen,
+              Constants.OrderStatus.ReadyforPickup,
+              Constants.OrderStatus.Delivered,
+            ].includes(statusOrder)
+              ? "completed step"
+              : "active step"
+          }
+        >
+          <div className="content">
+            <div className="title">Sent To Kitchen</div>
+            <div className="description">Finished cooking</div>
+          </div>
+        </div>
+        <div
+          className={
+            [
+              Constants.OrderStatus.ReadyforPickup,
+              Constants.OrderStatus.Delivered,
+            ].includes(statusOrder)
+              ? "completed step"
+              : "active step"
+          }
+        >
+          <div className="content">
+            <div className="title">Ready for Pickup</div>
+            <div className="description">Readly to delivered</div>
+          </div>
+        </div>
+        <div
+          className={
+            [Constants.OrderStatus.Delivered].includes(statusOrder)
+              ? "completed step"
+              : "active step"
+          }
+        >
+          <div className="content">
+            <div className="title">Delivered</div>
+            <div className="description">Delivered complete</div>
+          </div>
+        </div>
+      </div>
       <div className="ui horizontal divider" />
+
       <Modal.Actions>
         <Button color="black" onClick={() => setIsOpen(false)}>
           Close
         </Button>
-        <Button
-          content="Cancel Order"
-          labelPosition="left"
-          icon="close"
-          onClick={() => {
-            cancelOrder(orderId, customerId)
-            // setIsOpen(false)
-          }}
-          color="red"
-        />
-
-        <Button.Group color="teal">
-          <Button>Status: {statusOrder}</Button>
-          <Dropdown
-            className="button icon"
-            floating
-            options={options}
-            onChange={(e, { value }) => {
-              changeOrderStatus(orderId, value, customerId)
-            }}
-            trigger={<></>}
-            value={statusOrder}
-          />
-        </Button.Group>
       </Modal.Actions>
     </Modal>
   )
 })
 
-export default OrderDetailModal
+export default HistoryOrderDetailModal

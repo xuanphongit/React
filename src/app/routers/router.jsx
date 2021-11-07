@@ -12,6 +12,7 @@ import SignIn from "../pages/SignIn/SignIn"
 import SignUp from "../pages/SignUp/SignUp"
 import Home from "../pages/Home/Home"
 import Profile from "../pages/Profile/Profile"
+import HistoryOrder from "../pages/HistoryOrder"
 
 const Router = () => {
   return (
@@ -31,6 +32,7 @@ const Router = () => {
         <Route path="/Home" exact component={Home} />
         <AdminLayoutRoute exact path="/admin/view-menu" component={ViewMenu} />
         <CustomerLayoutRoute exact path="/store" component={Stores} />
+        <CustomerLayoutRoute exact path="/history" component={HistoryOrder} />
         <CustomerLayoutRoute
           path="/Cart/:cartId/:shopId"
           exact

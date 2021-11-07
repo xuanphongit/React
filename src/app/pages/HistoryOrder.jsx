@@ -1,18 +1,20 @@
 import { AgGridReact } from "ag-grid-react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import ActionCellRenderer from "./ViewOrders/ActionCellRenderer"
-import StatusCellRenderer from "./ViewOrders/StatusCellRenderer"
-import OrderDetailModal from "./ViewOrders/OrderDetailModal"
-import SectionHeader from "../components/SectionHeader"
 import { useSelector } from "react-redux"
 import orderApi from "../api/orderApi"
-import useToast from "../hooks/useToast"
 import { formatDate, formatMoney } from "../helpers/common-helper"
+import useToast from "../hooks/useToast"
+import HistoryOrderDetailModal from "./HistoryOrder/OrderDetailModal"
+import ActionCellRenderer from "./ViewOrders/ActionCellRenderer"
+import StatusCellRenderer from "./ViewOrders/StatusCellRenderer"
 
-const ViewOrders = () => {
+
+const HistoryOrder = () => {
   const { toastSuccess, toastError } = useToast()
 
-  const shopId = useSelector(state => state.SignIn).signInInfor.shopId
+  const userInfor = useSelector(state => state.SignIn)
+  const customerId = userInfor.signInInfor.customerId
+
   const [rowData, setRowData] = useState([])
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const ViewOrders = () => {
 
   const getOrders = () => {
     orderApi
-      .GetAllOrdersOfShop(shopId)
+      .GetAllOrdersOfCustomer(customerId)
       .then(response => {
         setRowData(response.data.orders)
       })
@@ -34,9 +36,9 @@ const ViewOrders = () => {
   const columnDefs = useMemo(
     () => [
       { headerName: "Order Id", field: "orderId", pinned: "left" },
-      { headerName: "Customer Id", field: "customerId" },
-      { headerName: "Customer Name", field: "customerName" },
-      { headerName: "Customer Phone", field: "customerPhoneNumber" },
+      { headerName: "Shop Id", field: "shopId" },
+      { headerName: "Shop Name", field: "shopName" },
+      { headerName: "Shop Phone", field: "phoneNumberOfShop" },
       {
         headerName: "Total Price",
         field: "totalPrice",
@@ -49,6 +51,13 @@ const ViewOrders = () => {
         field: "status",
         cellRenderer: "statusCellRenderer",
       },
+
+      {
+        headerName: "Delivery Information",
+        field: "deliveryInformation",
+        cellRenderer: "statusCellRenderer",
+      },
+
       {
         headerName: "Order Time",
         field: "orderTime",
@@ -83,38 +92,6 @@ const ViewOrders = () => {
     []
   )
 
-  const cancelOrder = (orderId, customerId) => {
-    orderApi
-      .CancelOrder({ orderId, customerId })
-      .then(response => {
-        const { errorMessage } = response.data
-        if (errorMessage) {
-          toastError(errorMessage)
-        } else {
-          getOrders()
-        }
-      })
-      .catch(error => {
-        toastError(error)
-      })
-  }
-
-  const changeOrderStatus = (orderId, orderStatus, customerId) => {
-    orderApi
-      .ChangeOrderStatus({ orderId, orderStatus, customerId, shopId })
-      .then(response => {
-        const { errorMessage } = response.data
-        if (errorMessage) {
-          toastError(errorMessage)
-        } else {
-          getOrders()
-        }
-      })
-      .catch(error => {
-        toastError(error)
-      })
-  }
-
   // changes, needs to be state
   const gridHeight = window.innerHeight
 
@@ -126,7 +103,7 @@ const ViewOrders = () => {
 
   return (
     <>
-      <SectionHeader title="View Orders"></SectionHeader>
+      History Orders
       <div
         className="ag-theme-material grid-order"
         style={{ height: gridHeight - 150 }}
@@ -144,13 +121,11 @@ const ViewOrders = () => {
           }}
         />
       </div>
-      <OrderDetailModal
+      <HistoryOrderDetailModal
         ref={modalRef}
-        cancelOrder={cancelOrder}
-        changeOrderStatus={changeOrderStatus}
-      ></OrderDetailModal>
+      ></HistoryOrderDetailModal>
     </>
   )
 }
 
-export default ViewOrders
+export default HistoryOrder
