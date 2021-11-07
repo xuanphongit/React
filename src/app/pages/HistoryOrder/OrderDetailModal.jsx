@@ -64,7 +64,14 @@ const HistoryOrderDetailModal = forwardRef((props, ref) => {
     []
   )
 
-  const { orderTime, totalPrice, customerId } = orderInfor
+  const {
+    orderTime,
+    totalPrice,
+    customerId,
+    shopId,
+    phoneNumberOfShop,
+    shopName,
+  } = orderInfor
 
   return (
     <Modal
@@ -99,15 +106,31 @@ const HistoryOrderDetailModal = forwardRef((props, ref) => {
         <div className="three column row">
           <div className="right floated column">
             <a className="item">
+              <div className="ui horizontal label">Shop Id: </div>
+              {shopId}
+            </a>
+            <p></p>
+            <a className="item">
+              <div className="ui horizontal label">Shop Name:</div>
+              {shopName}
+            </a>
+            <p></p>
+            <a className="item">
+              <div className="ui horizontal label">Shop Phone Number</div>
+              {phoneNumberOfShop}
+            </a>
+          </div>
+          <div className="right floated column">
+            <a className="item">
               <div className="ui horizontal label">Order Time :&nbsp;</div>
               {dayjs(orderTime).format("MM/DD/YYYY HH:mm")}
             </a>
-            <div className="ui horizontal divider" />
+            <p></p>
             <a className="item">
               <div className="ui horizontal label">Order Status:</div>
               {statusOrder}
             </a>
-            <div className="ui horizontal divider" />
+            <p></p>
             <a className="item">
               <div className="ui horizontal label">
                 Total: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
@@ -117,6 +140,7 @@ const HistoryOrderDetailModal = forwardRef((props, ref) => {
           </div>
         </div>
       </div>
+
       <div className="ui horizontal divider"> Progress</div>
       <div className="ui ordered steps">
         <div
