@@ -8,8 +8,12 @@ const AdminLayout = ({ children }) => {
     <div className="admin-layout">
       <HeaderAdmin></HeaderAdmin>
       <Grid>
-        <Grid.Column width={1}>
+        <Grid.Column width={1}></Grid.Column>
+        <Grid.Column width={2}>
+          <RightSideBar></RightSideBar>
         </Grid.Column>
+        <Grid.Column width={1}></Grid.Column>
+
         <Grid.Column width={11}>
           <Container className="app__content" fluid>
             <Container fluid className="app__content-wrapper">
@@ -17,9 +21,7 @@ const AdminLayout = ({ children }) => {
             </Container>
           </Container>
         </Grid.Column>
-        <Grid.Column width={3}>
-          <RightSideBar></RightSideBar>
-        </Grid.Column>
+        <Grid.Column width={1}></Grid.Column>
       </Grid>
     </div>
   )

@@ -15,7 +15,7 @@ import {
 import customerApi from "../../api/customerApi"
 import shopApi from "../../api/shopApi"
 import { useDispatch } from "react-redux"
-import { setIsShopFlag, setSignInInformation } from "./signInSlice"
+import { setSignInInformation } from "./signInSlice"
 
 const Login = () => {
   const history = useHistory()
@@ -41,8 +41,6 @@ const Login = () => {
         .then(response => {
           toastSuccess("Log in successfully")
 
-          dispatch(setIsShopFlag(true))
-
           const actionSetShopId = setSignInInformation(response.data)
           dispatch(actionSetShopId)
 
@@ -61,8 +59,6 @@ const Login = () => {
 
           if (customerId != null) {
             toastSuccess("Log in successfully")
-
-            dispatch(setIsShopFlag(false))
 
             const actionSetShopId = setSignInInformation(response.data)
 

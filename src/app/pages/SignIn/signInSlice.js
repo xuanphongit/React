@@ -7,9 +7,6 @@ const signInSlice = createSlice({
   name: "SignIn",
   initialState: initialState,
   reducers: {
-    setIsShopFlag: (state, action) => {
-      state.isShop = action.payload
-    },
 
     setSignInInformation: (state, action) => {
       state.signInInfor = action.payload
@@ -23,5 +20,5 @@ const signInSlice = createSlice({
 })
 
 const { actions, reducer } = signInSlice
-export const { setIsShopFlag, setSignInInformation, clearStore } = actions
+export const { setSignInInformation, clearStore } = actions
 export default reducer

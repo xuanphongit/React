@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react"
-import { Button, Image } from "semantic-ui-react"
+import { Button, Divider, Image } from "semantic-ui-react"
 import StoreInforField from "../../components/StoreInforField"
 import { useSelector } from "react-redux"
 import shopApi from "../../api/shopApi"
 import { useHistory } from "react-router"
 import useToast from "../../hooks/useToast"
+import SectionHeader from "../../components/SectionHeader"
 
 const RightSideBar = () => {
   const [shop, setShop] = useState({})
@@ -40,6 +41,8 @@ const RightSideBar = () => {
 
   return (
     <div className="admin-layout_side-bar">
+      <SectionHeader title="Shop Information"></SectionHeader>
+      <Divider />
       <Image
         src={
           image
@@ -56,18 +59,6 @@ const RightSideBar = () => {
         icon="linkify"
         title="Link"
         label={link}
-        link={link}
-      ></StoreInforField>
-      <StoreInforField
-        icon="hashtag"
-        title="ID"
-        label={shopId}
-      ></StoreInforField>
-      <StoreInforField icon="home" title="Name" label={name}></StoreInforField>
-      <StoreInforField
-        icon="phone"
-        title="Phone Number"
-        label={phoneNumber}
       ></StoreInforField>
 
       <Button
@@ -79,16 +70,25 @@ const RightSideBar = () => {
         color="green"
         style={{ marginTop: 15, width: "100%" }}
       />
+      <Divider />
 
-      <Button
-        basic
-        content="Edit Profile"
-        labelPosition="left"
-        icon="briefcase"
-        onClick={viewShopProfile}
-        color="blue"
-        style={{ marginTop: 15, width: "100%" }}
-      />
+      <StoreInforField
+        icon="hashtag"
+        title="ID"
+        label={shopId}
+      ></StoreInforField>
+      <Divider />
+      <StoreInforField
+        icon="home"
+        title="Shop Name: "
+        label={name}
+      ></StoreInforField>
+      <Divider />
+      <StoreInforField
+        icon="phone"
+        title="Phone Number"
+        label={phoneNumber}
+      ></StoreInforField>
     </div>
   )
 }
