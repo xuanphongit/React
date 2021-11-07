@@ -1,52 +1,53 @@
+import React, { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import { useHistory } from "react-router"
-import { useEffect, useState } from "react"
-import useToast from "../../hooks/useToast"
-import React from "react"
 import {
   Button,
-  Image,
-  Form,
-  Grid,
-  Segment,
   Container,
   Divider,
-  Label,
-  Icon,
+  Form,
+  Grid,
+  Image,
+  Segment,
 } from "semantic-ui-react"
-import shopApi from "../../api/shopApi"
-import { useSelector } from "react-redux"
+import customerApi from "../../api/customerApi"
+import useToast from "../../hooks/useToast"
 
-const Profile = () => {
+const CustomerProfile = () => {
   const history = useHistory()
   const { toastSuccess, toastError } = useToast()
 
-  const shopId = useSelector(state => state.SignIn).signInInfor.shopId
-  const [shop, setShop] = useState({})
+  const userInfor = useSelector(state => state.SignIn)
+  const { customerId, phoneNumber } = userInfor.signInInfor
+
+  const [customer, setCustomer] = useState({})
   const [file, setFile] = React.useState(null)
 
   useEffect(() => {
-    shopApi
-      .getShopInforById(shopId)
+    customerApi
+      .Login({ phoneNumber: phoneNumber })
       .then(response => {
-        setShop(response.data)
+        setCustomer(response.data)
       })
-      .catch(toastError.error())
+      .catch(error => {
+        toastError(error)
+      })
   }, [])
 
-  const { image, name, phoneNumber } = shop
+  const { avatar, name } = customer
 
-  const imgSrc = `data:image/jpeg;base64,${image}`
+  const imgSrc = `data:image/jpeg;base64,${avatar}`
 
   const UpdateInformation = () => {
-    history.push("/admin")
+    history.push("/store")
   }
 
   const submit = event => {
     var form_data = new FormData(document.getElementById("update-form"))
-    shopApi
+    customerApi
       .Update(form_data)
       .then(response => {
-        toastSuccess("Update shop information successfully")
+        toastSuccess("Update customer information successfully")
         UpdateInformation()
       })
       .catch(error => {
@@ -60,8 +61,8 @@ const Profile = () => {
     setFile(e.target.files[0])
   }
 
-  const labelName = "Shop Name"
-  const imageName = "Logo"
+  const labelName = "Customer Name"
+  const imageName = "Avatar"
 
   return (
     <Container className="auth-form">
@@ -82,18 +83,16 @@ const Profile = () => {
               </Form.Field>
 
               <Form.Field>
+                <input name="customerId" defaultValue={customerId} hidden />
+              </Form.Field>
+
+              <Form.Field>
                 <label>Phone Number</label>
                 <input
                   placeholder="Phone Number"
                   defaultValue={phoneNumber}
                   name="PhoneNumber"
-                  readOnly
                 />
-              </Form.Field>
-
-              <Form.Field>
-                <label>New Phone Number</label>
-                <input placeholder="New Phone Number" name="NewPhoneNumber" />
               </Form.Field>
 
               <div>
@@ -105,7 +104,7 @@ const Profile = () => {
                         src={
                           file
                             ? URL.createObjectURL(file)
-                            : image
+                            : avatar
                             ? imgSrc
                             : "https://dummyimage.com/900x900/ecf0f1/aaa"
                         }
@@ -139,4 +138,4 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default CustomerProfile

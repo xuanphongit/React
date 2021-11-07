@@ -24,7 +24,7 @@ const HeaderGuest = () => {
       <Menu.Item
         name="profile"
         active={activeItem === "profile"}
-        onClick={() => history.push("/profile")}
+        onClick={() => history.push("/customer-profile")}
       >
         <Icon size={"small"} name="user" /> Profile
       </Menu.Item>

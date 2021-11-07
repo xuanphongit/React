@@ -13,6 +13,7 @@ import SignUp from "../pages/SignUp/SignUp"
 import Home from "../pages/Home/Home"
 import Profile from "../pages/Profile/Profile"
 import HistoryOrder from "../pages/HistoryOrder"
+import CustomerProfile from "../pages/Profile/CustomerProfile"
 
 const Router = () => {
   return (
@@ -39,6 +40,12 @@ const Router = () => {
           component={Store}
         />
         <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
+        <CustomerLayoutRoute exact path="/history" component={HistoryOrder} />
+        <CustomerLayoutRoute
+          exact
+          path="/customer-profile"
+          component={CustomerProfile}
+        />
         <DefaultLayoutRoute exact path="/sign-in" component={SignIn} />
         <DefaultLayoutRoute exact path="/sign-up" component={SignUp} />
         <AdminLayoutRoute exact path="/admin/profile" component={Profile} />
