@@ -1,36 +1,45 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react"
-import { generateItems, generateOrders } from "../../helpers/fake-data-helper"
-import { Button, Grid, Modal } from "semantic-ui-react"
-import dayjs from "dayjs"
 import { AgGridReact } from "ag-grid-react/lib/agGridReact"
-import OrderInforField from "./../../components/OrderInforField"
+import dayjs from "dayjs"
+import { forwardRef, useImperativeHandle, useMemo, useState } from "react"
+import { Button, Dropdown, Modal } from "semantic-ui-react"
 import orderApi from "../../api/orderApi"
+
 const OrderDetailModal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [order] = useState(generateOrders())
   const [orderInfor, setOrderInfor] = useState({})
-  const [orderId, setorderId] = useState({})
+  const [rowData, setRowData] = useState([])
+  const [statusOrder, setstatusOrder] = useState("")
+  const [orderId, setOrderId] = useState("")
+  const { changeOrderStatus, cancelOrder } = props
 
   useImperativeHandle(ref, () => ({
     open(orderId) {
       setIsOpen(true)
-      setorderId(orderId)
+      setOrderId(orderId)
       orderApi.GetOrder(orderId).then(response => {
         setOrderInfor(response.data)
+        setstatusOrder(response.data.status)
+        setRowData(response.data.itemsInCart)
       })
     },
   }))
 
-  const columnDefs = useMemo(
-    () => [
-      { field: "name", minWidth: 100 },
-      { field: "price" },
-      { field: "quantity" },
-      { field: "total" },
-      { field: "note" },
-    ],
-    []
-  )
+  const columnDefs = useMemo(() => [
+    {
+      field: "image",
+      minWidth: 100,
+      width: 100,
+      maxWidth: 100,
+      fitCell: true,
+      cellRenderer: data => {
+        return `<img src="data:image/png;base64,${data.value}" width="90px" height="90px">`
+      },
+    },
+    { field: "customerName", minWidth: 100 },
+    { field: "itemName" },
+    { field: "price" },
+    { field: "amount" },
+  ])
 
   const defaultColDef = useMemo(
     () => ({
@@ -40,9 +49,14 @@ const OrderDetailModal = forwardRef((props, ref) => {
     []
   )
 
-  const [rowData] = useState(generateItems())
+  const options = [
+    { key: 0, text: "Confirmed", value: "Confirmed" },
+    { key: 1, text: "Sent To Kitchen", value: "Sent To Kitchen" },
+    { key: 2, text: "Ready for Pickup", value: "Ready for Pickup" },
+    { key: 3, text: "Delivered", value: "Delivered" },
+  ]
 
-  const { orderNumber, customerName, customerPhone, orderTime } = order
+  const { orderTime, totalPrice, customerId } = orderInfor
 
   return (
     <Modal
@@ -53,34 +67,6 @@ const OrderDetailModal = forwardRef((props, ref) => {
       <Modal.Header>{`Order #${orderId}`}</Modal.Header>
       <Modal.Content image>
         <Modal.Description>
-          <div className="order-info">
-            <Grid container>
-              <Grid.Column width={3}>
-                <OrderInforField
-                  title="Order No"
-                  label={orderNumber}
-                ></OrderInforField>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <OrderInforField
-                  title="Order Time"
-                  label={dayjs(orderTime).format("MM/DD/YYYY HH:mm")}
-                ></OrderInforField>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <OrderInforField
-                  title="Customer Name"
-                  label={customerName}
-                ></OrderInforField>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <OrderInforField
-                  title="Customer Phone"
-                  label={customerPhone}
-                ></OrderInforField>
-              </Grid.Column>
-            </Grid>
-          </div>
           <div
             className="order-items ag-theme-material"
             style={{ height: 240 }}
@@ -99,6 +85,24 @@ const OrderDetailModal = forwardRef((props, ref) => {
           </div>
         </Modal.Description>
       </Modal.Content>
+      <div className="ui horizontal divider">Sumary</div>
+
+      <div className="ui grid">
+        <div className="three column row">
+          <div className="right floated column">
+            <a className="item">
+              <div className="ui horizontal label">Order Time</div>
+              {dayjs(orderTime).format("MM/DD/YYYY HH:mm")}
+            </a>
+            <div className="ui horizontal divider" />
+            <a className="item">
+              <div className="ui horizontal label">Total</div>
+              {totalPrice} vnđ
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="ui horizontal divider" />
       <Modal.Actions>
         <Button color="black" onClick={() => setIsOpen(false)}>
           Close
@@ -107,16 +111,26 @@ const OrderDetailModal = forwardRef((props, ref) => {
           content="Cancel Order"
           labelPosition="left"
           icon="close"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            cancelOrder(orderId, customerId)
+            // setIsOpen(false)
+          }}
           color="red"
         />
-        <Button
-          content="Complete Order"
-          labelPosition="right"
-          icon="checkmark"
-          onClick={() => setIsOpen(false)}
-          positive
-        />
+
+        <Button.Group color="teal">
+          <Button>Status: {statusOrder}</Button>
+          <Dropdown
+            className="button icon"
+            floating
+            options={options}
+            onChange={(e, { value }) => {
+              changeOrderStatus(orderId, value, customerId)
+            }}
+            trigger={<></>}
+            value={statusOrder}
+          />
+        </Button.Group>
       </Modal.Actions>
     </Modal>
   )

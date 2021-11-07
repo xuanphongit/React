@@ -31,8 +31,6 @@ const data = { ShopId: signInformation.signInInfor.shopId }
         fetchData()
       })
       .catch(error => {
-    console.log(error)
-
         toastError(error)
       })
   }

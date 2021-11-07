@@ -23,8 +23,6 @@ const Cart = ({
   if (itemsInCart && itemsInCart.length) {
     isAllMemberSubmit = !itemsInCart.some(a => !a.readyToOrder)
 
-    console.log(isAllMemberSubmit)
-
     // get distinct customer id from list item
     customerIds = [...new Set(itemsInCart.map(item => item.customerId))]
 

@@ -8,6 +8,7 @@ import SectionHeader from "../components/SectionHeader"
 import { useSelector } from "react-redux"
 import orderApi from "../api/orderApi"
 import useToast from "../hooks/useToast"
+import { formatDate, formatMoney } from "../helpers/common-helper"
 
 const ViewOrders = () => {
   const { toastSuccess, toastError } = useToast()
@@ -24,7 +25,6 @@ const ViewOrders = () => {
       .GetAllOrdersOfShop(shopId)
       .then(response => {
         setRowData(response.data.orders)
-        console.log(response.data)
       })
       .catch(error => {
         toastError(error)
@@ -34,13 +34,20 @@ const ViewOrders = () => {
   // never changes, so we can use useMemo
   const columnDefs = useMemo(
     () => [
-      { headerName: "Id", field: "orderId", pinned: "left" },
+      { headerName: "Order Id", field: "orderId", pinned: "left" },
+      { headerName: "Customer Id", field: "customerId" },
       { headerName: "Customer Name", field: "customerName" },
       { headerName: "Customer Phone", field: "customerPhoneNumber" },
-      { headerName: "Total Price", field: "totalPrice" },
+      {
+        headerName: "Total Price",
+        field: "totalPrice",
+        cellRenderer: data => {
+          return data.value ? formatMoney(data.value) : "0"
+        },
+      },
       {
         headerName: "Status",
-        field: "deliveryInformation",
+        field: "status",
         cellRenderer: "statusCellRenderer",
       },
       {
@@ -49,7 +56,7 @@ const ViewOrders = () => {
         sort: "desc",
         width: 250,
         cellRenderer: data => {
-          return data.value ? new Date(data.value).toLocaleTimeString() : ""
+          return data.value ? formatDate(new Date(data.value)) : ""
         },
       },
       {
@@ -76,6 +83,38 @@ const ViewOrders = () => {
     }),
     []
   )
+
+  const cancelOrder = (orderId, customerId) => {
+    orderApi
+      .CancelOrder({ orderId, customerId })
+      .then(response => {
+        const { errorMessage } = response.data
+        if (errorMessage) {
+          toastError(errorMessage)
+        } else {
+          getOrders()
+        }
+      })
+      .catch(error => {
+        toastError(error)
+      })
+  }
+
+  const changeOrderStatus = (orderId, orderStatus, customerId) => {
+    orderApi
+      .ChangeOrderStatus({ orderId, orderStatus, customerId, shopId })
+      .then(response => {
+        const { errorMessage } = response.data
+        if (errorMessage) {
+          toastError(errorMessage)
+        } else {
+          getOrders()
+        }
+      })
+      .catch(error => {
+        toastError(error)
+      })
+  }
 
   // changes, needs to be state
   const gridHeight = window.innerHeight
@@ -106,7 +145,11 @@ const ViewOrders = () => {
           }}
         />
       </div>
-      <OrderDetailModal ref={modalRef}></OrderDetailModal>
+      <OrderDetailModal
+        ref={modalRef}
+        cancelOrder={cancelOrder}
+        changeOrderStatus={changeOrderStatus}
+      ></OrderDetailModal>
     </>
   )
 }

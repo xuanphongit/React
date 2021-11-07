@@ -42,7 +42,6 @@ const Store = () => {
   }, [])
 
   const loadCart = () => {
-    console.log("load cart")
     // guest
     if (cartId) {
       setIsHost(false)
