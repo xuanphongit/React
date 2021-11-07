@@ -30,7 +30,7 @@ const Profile = () => {
       .then(response => {
         setShop(response.data)
       })
-      .catch(toastError.error())
+      .catch(error =>toastError(error))
   }, [])
 
   const { image, name, phoneNumber } = shop
@@ -65,7 +65,7 @@ const Profile = () => {
 
   return (
     <Container className="auth-form">
-      <Image src="/logo/logo64.png" centered />
+      <Image src="/logo/logo.png" centered />
       <Grid columns="equal">
         <Grid.Column></Grid.Column>
         <Grid.Column width={6}>

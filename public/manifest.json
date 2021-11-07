@@ -1,19 +1,19 @@
 {
   "short_name": "Online Store",
-  "name": "Create React App Sample",
+  "name": "Online Shop PhongMX",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "64x64",
       "type": "image/x-icon"
     },
     {
-      "src": "logo64.png",
+      "src": "logo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo64.png",
+      "src": "logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }

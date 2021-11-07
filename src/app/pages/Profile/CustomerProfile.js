@@ -66,7 +66,7 @@ const CustomerProfile = () => {
 
   return (
     <Container className="auth-form">
-      <Image src="/logo/logo64.png" centered />
+      <Image src="/logo/logo.png" centered />
       <Grid columns="equal">
         <Grid.Column></Grid.Column>
         <Grid.Column width={6}>
