@@ -1,4 +1,12 @@
-import { Button, Divider, Header, Icon, Label, List,Checkbox } from "semantic-ui-react"
+import {
+  Button,
+  Divider,
+  Header,
+  Icon,
+  Label,
+  List,
+  Checkbox,
+} from "semantic-ui-react"
 import CartItemGroup from "./CartItemGroup"
 import { formatCurrency, formatPercentage } from "./../helpers/number-helper"
 import { groupBy } from "../helpers/common-helper"
@@ -29,7 +37,7 @@ const Cart = ({
     // group items by customer id
     group = groupBy(itemsInCart, "customerId")
     currentCustomerCartGroup = group[currentCustomerId]
-    isCurrentCustomerSubmited = !currentCustomerCartGroup.some(
+    isCurrentCustomerSubmited = currentCustomerCartGroup && currentCustomerCartGroup.length > 0 && !currentCustomerCartGroup.some(
       a => !a.readyToOrder
     )
   }
@@ -53,7 +61,7 @@ const Cart = ({
           labelPosition="left"
           icon="thumbs up outline"
           color="green"
-          style={{ marginTop: 15, left: 0, width: "49%", marginRight: "1%" }}
+          style={{ marginTop: 15, left: 0, width: "48%", marginRight: "1%" }}
           onClick={() => {
             submitCart()
           }}
@@ -63,9 +71,9 @@ const Cart = ({
           basic
           content="Un Submit"
           labelPosition="left"
-          icon="thumbs up outline"
+          icon="thumbs down outline"
           color="red"
-          style={{ marginTop: 15, width: "49%" }}
+          style={{ marginTop: 15, width: "48%" }}
           onClick={() => {
             unSubmitCart()
           }}

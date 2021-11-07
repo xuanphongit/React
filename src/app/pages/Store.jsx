@@ -221,7 +221,7 @@ const Store = () => {
   const placeNewOrder = () => {
     var orederRequest = {
       cartId: currentCartId,
-      deliveryInformation: Constants.OrderStatus.Confirmed,
+      deliveryInformation: Constants.OrderStatus.Ordered,
     }
     // place new order
     orderApi

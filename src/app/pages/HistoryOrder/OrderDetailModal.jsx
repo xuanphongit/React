@@ -16,13 +16,28 @@ const HistoryOrderDetailModal = forwardRef((props, ref) => {
     open(orderId) {
       setIsOpen(true)
       setOrderId(orderId)
-      orderApi.GetOrder(orderId).then(response => {
-        setOrderInfor(response.data)
-        setstatusOrder(response.data.status)
-        setRowData(response.data.itemsInCart)
-      })
+      getOrder(orderId)
+    },
+    updateOrderStatus(orderId) {
+      if (isOpen && orderId) {
+        updateOrderStatus(orderId)
+      }
     },
   }))
+
+  const getOrder = orderId => {
+    orderApi.GetOrder(orderId).then(response => {
+      setOrderInfor(response.data)
+      setstatusOrder(response.data.status)
+      setRowData(response.data.itemsInCart)
+    })
+  }
+
+  const updateOrderStatus = orderId => {
+    orderApi.GetOrder(orderId).then(response => {
+      setstatusOrder(response.data.status)
+    })
+  }
 
   const columnDefs = useMemo(() => [
     {
@@ -84,13 +99,18 @@ const HistoryOrderDetailModal = forwardRef((props, ref) => {
         <div className="three column row">
           <div className="right floated column">
             <a className="item">
-              <div className="ui horizontal label">Order Time :</div>
+              <div className="ui horizontal label">Order Time :&nbsp;</div>
               {dayjs(orderTime).format("MM/DD/YYYY HH:mm")}
             </a>
             <div className="ui horizontal divider" />
             <a className="item">
+              <div className="ui horizontal label">Order Status:</div>
+              {statusOrder}
+            </a>
+            <div className="ui horizontal divider" />
+            <a className="item">
               <div className="ui horizontal label">
-                Total: &nbsp;&nbsp;&nbsp; &nbsp;
+                Total: &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
               </div>
               {totalPrice} vnđ
             </a>
