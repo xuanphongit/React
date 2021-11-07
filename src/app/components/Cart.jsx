@@ -6,10 +6,12 @@ import {
   Label,
   List,
   Checkbox,
+  Grid,
 } from "semantic-ui-react"
 import CartItemGroup from "./CartItemGroup"
 import { formatCurrency, formatPercentage } from "./../helpers/number-helper"
 import { groupBy } from "../helpers/common-helper"
+import useToast from "../hooks/useToast"
 
 const Cart = ({
   cart,
@@ -21,7 +23,7 @@ const Cart = ({
   placeNewOrder,
 }) => {
   const { cartId, shopId, customerId, itemsInCart, totalPrice } = cart
-
+  const { toastSuccess, toastError } = useToast()
   let customerIds = []
   let group = {}
   let isCurrentCustomerSubmited = false
@@ -37,14 +39,41 @@ const Cart = ({
     // group items by customer id
     group = groupBy(itemsInCart, "customerId")
     currentCustomerCartGroup = group[currentCustomerId]
-    isCurrentCustomerSubmited = currentCustomerCartGroup && currentCustomerCartGroup.length > 0 && !currentCustomerCartGroup.some(
-      a => !a.readyToOrder
-    )
+    isCurrentCustomerSubmited =
+      currentCustomerCartGroup &&
+      currentCustomerCartGroup.length > 0 &&
+      !currentCustomerCartGroup.some(a => !a.readyToOrder)
+  }
+
+  const share = () => {
+    const link = `http://localhost:3000/cart/${cartId}/${shopId}`
+    navigator.clipboard.writeText(link)
+    toastSuccess(`Link share was copied to clipboard: ${link}`)
   }
 
   return (
     <>
-      <Header>Cart {cartId}</Header>
+      <Header>
+        <Grid columns={2}>
+          <Grid.Row>
+            <Grid.Column>Cart {cartId}</Grid.Column>
+            <Grid.Column>
+              {isHost && (
+                <Button
+                  basic
+                  content="Share"
+                  labelPosition="left"
+                  icon="share alternate"
+                  onClick={share}
+                  color="green"
+                  style={{ width: "100%", height: "100%", padding: "10px" }}
+                />
+              )}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Header>
+      <Divider></Divider>
       <List divided selection>
         <List.Item className="total">
           Total
