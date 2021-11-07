@@ -3,6 +3,7 @@ import dayjs from "dayjs"
 import { forwardRef, useImperativeHandle, useMemo, useState } from "react"
 import { Button, Dropdown, Modal } from "semantic-ui-react"
 import orderApi from "../../api/orderApi"
+import { Constants } from "../../helpers/constants"
 
 const OrderDetailModal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -67,13 +68,10 @@ const OrderDetailModal = forwardRef((props, ref) => {
       <Modal.Header>{`Order #${orderId}`}</Modal.Header>
       <Modal.Content image>
         <Modal.Description>
-          <div
-            className="order-items ag-theme-material"
-            style={{ height: 240 }}
-          >
+          <div className="order-items ag-theme-alpine" style={{ height: 240 }}>
             <AgGridReact
               reactUi="true"
-              className="ag-theme-material"
+              className="ag-theme-alpine"
               animateRows="true"
               columnDefs={columnDefs}
               defaultColDef={defaultColDef}
@@ -109,30 +107,36 @@ const OrderDetailModal = forwardRef((props, ref) => {
         <Button color="black" onClick={() => setIsOpen(false)}>
           Close
         </Button>
-        <Button
-          content="Cancel Order"
-          labelPosition="left"
-          icon="close"
-          onClick={() => {
-            cancelOrder(orderId, customerId)
-            // setIsOpen(false)
-          }}
-          color="red"
-        />
 
-        <Button.Group color="teal">
-          <Button>Status: {statusOrder}</Button>
-          <Dropdown
-            className="button icon"
-            floating
-            options={options}
-            onChange={(e, { value }) => {
-              changeOrderStatus(orderId, value, customerId)
+        {!statusOrder && (
+          <Button
+            content="Cancel Order"
+            labelPosition="left"
+            icon="close"
+            onClick={() => {
+              cancelOrder(orderId, customerId)
+              setIsOpen(false)
             }}
-            trigger={<></>}
-            value={statusOrder}
+            color="red"
           />
-        </Button.Group>
+        )}
+
+        {statusOrder != Constants.OrderStatus.Cancelled && (
+          <Button.Group color="teal">
+            <Button>Status: {statusOrder}</Button>
+            <Dropdown
+              className="button icon"
+              floating
+              options={options}
+              onChange={(e, { value }) => {
+                setstatusOrder(value)
+                changeOrderStatus(orderId, value, customerId)
+              }}
+              trigger={<></>}
+              value={statusOrder}
+            />
+          </Button.Group>
+        )}
       </Modal.Actions>
     </Modal>
   )

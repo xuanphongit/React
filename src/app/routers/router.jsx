@@ -24,24 +24,24 @@ const Router = () => {
         <Route path="/admin" exact>
           <Redirect to="/admin/view-orders" />
         </Route>
+        <Route path="/Home" exact component={Home} />
+        <AdminLayoutRoute exact path="/admin/profile" component={Profile} />
         <AdminLayoutRoute
           exact
           path="/admin/view-orders"
           component={ViewOrders}
         />
-        <Route path="/Home" exact component={Home} />
         <AdminLayoutRoute exact path="/admin/view-menu" component={ViewMenu} />
         <CustomerLayoutRoute exact path="/store" component={Stores} />
-        <CustomerLayoutRoute exact path="/history" component={HistoryOrder} />
+        <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
         <CustomerLayoutRoute
           path="/Cart/:cartId/:shopId"
           exact
           component={Store}
         />
-        <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
+        <CustomerLayoutRoute exact path="/history" component={HistoryOrder} />
         <DefaultLayoutRoute exact path="/sign-in" component={SignIn} />
         <DefaultLayoutRoute exact path="/sign-up" component={SignUp} />
-        <AdminLayoutRoute exact path="/admin/profile" component={Profile} />
         <Route path="*">
           <NotFound />
         </Route>

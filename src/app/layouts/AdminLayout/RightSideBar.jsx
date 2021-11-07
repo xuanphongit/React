@@ -4,9 +4,11 @@ import StoreInforField from "../../components/StoreInforField"
 import { useSelector } from "react-redux"
 import shopApi from "../../api/shopApi"
 import { useHistory } from "react-router"
+import useToast from "../../hooks/useToast"
 
 const RightSideBar = () => {
   const [shop, setShop] = useState({})
+  const { toastSuccess, toastError } = useToast()
 
   const shopId = useSelector(state => state.SignIn).signInInfor.shopId
 
@@ -31,14 +33,19 @@ const RightSideBar = () => {
     history.push("profile")
   }
 
-  const share = () => {}
-
-  const copy = () => {}
+  const share = () => {
+    navigator.clipboard.writeText(link)
+    toastSuccess(`Link share was copied to clipboard: ${link}`)
+  }
 
   return (
     <div className="admin-layout_side-bar">
       <Image
-        src={image ? imgSrc : "https://dummyimage.com/900x900/aaaaaa/eeeeee.png&text=Logo+Image"}
+        src={
+          image
+            ? imgSrc
+            : "https://dummyimage.com/900x900/aaaaaa/eeeeee.png&text=Logo+Image"
+        }
         fluid
         rounded
         onClick={viewShopProfile}
@@ -75,16 +82,6 @@ const RightSideBar = () => {
 
       <Button
         basic
-        content="Copy Link"
-        labelPosition="left"
-        icon="linkify"
-        onClick={copy}
-        color="brown"
-        style={{ marginTop: 15, width: "100%" }}
-      />
-
-      <Button
-        basic
         content="Edit Profile"
         labelPosition="left"
         icon="briefcase"
@@ -92,7 +89,6 @@ const RightSideBar = () => {
         color="blue"
         style={{ marginTop: 15, width: "100%" }}
       />
-
     </div>
   )
 }

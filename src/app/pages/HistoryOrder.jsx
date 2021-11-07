@@ -4,10 +4,11 @@ import { useSelector } from "react-redux"
 import orderApi from "../api/orderApi"
 import { formatDate, formatMoney } from "../helpers/common-helper"
 import useToast from "../hooks/useToast"
+import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
+import { getHubConnection } from "../signalr/signalr"
 import HistoryOrderDetailModal from "./HistoryOrder/OrderDetailModal"
 import ActionCellRenderer from "./ViewOrders/ActionCellRenderer"
 import StatusCellRenderer from "./ViewOrders/StatusCellRenderer"
-
 
 const HistoryOrder = () => {
   const { toastSuccess, toastError } = useToast()
@@ -30,6 +31,31 @@ const HistoryOrder = () => {
       .catch(error => {
         toastError(error)
       })
+  }
+
+  const [orderHubConnection, setorderHubConnection] = useState(null)
+  const connectOrderHub = orderId => {
+    if (!orderHubConnection) {
+      const orderHub = `${HubConnectionUrl.OrderHub}${orderId}`
+      const hubConnection = getHubConnection(orderHub, orderNotifyHandle)
+      setorderHubConnection(hubConnection)
+    }
+  }
+
+  const orderNotifyHandle = orderHubConnection => {
+    orderHubConnection.on(HubMethod.ChangeOrderStatus, response => {
+      if (response && response.orderId) {
+        updateOrderStatus(response.orderId)
+        getOrders()
+      }
+    })
+
+    orderHubConnection.on(HubMethod.CancelOrder, response => {
+      if (response) {
+        updateOrderStatus(response)
+        getOrders()
+      }
+    })
   }
 
   // never changes, so we can use useMemo
@@ -99,6 +125,11 @@ const HistoryOrder = () => {
 
   const viewOrder = orderId => {
     modalRef.current.open(orderId)
+    connectOrderHub(orderId)
+  }
+
+  const updateOrderStatus = orderId => {
+    modalRef.current.updateOrderStatus(orderId)
   }
 
   return (
@@ -121,9 +152,7 @@ const HistoryOrder = () => {
           }}
         />
       </div>
-      <HistoryOrderDetailModal
-        ref={modalRef}
-      ></HistoryOrderDetailModal>
+      <HistoryOrderDetailModal ref={modalRef}></HistoryOrderDetailModal>
     </>
   )
 }

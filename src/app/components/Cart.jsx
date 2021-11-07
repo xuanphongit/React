@@ -1,7 +1,17 @@
-import { Button, Divider, Header, Icon, Label, List,Checkbox } from "semantic-ui-react"
+import {
+  Button,
+  Divider,
+  Header,
+  Icon,
+  Label,
+  List,
+  Checkbox,
+  Grid,
+} from "semantic-ui-react"
 import CartItemGroup from "./CartItemGroup"
 import { formatCurrency, formatPercentage } from "./../helpers/number-helper"
 import { groupBy } from "../helpers/common-helper"
+import useToast from "../hooks/useToast"
 
 const Cart = ({
   cart,
@@ -13,7 +23,7 @@ const Cart = ({
   placeNewOrder,
 }) => {
   const { cartId, shopId, customerId, itemsInCart, totalPrice } = cart
-
+  const { toastSuccess, toastError } = useToast()
   let customerIds = []
   let group = {}
   let isCurrentCustomerSubmited = false
@@ -29,14 +39,41 @@ const Cart = ({
     // group items by customer id
     group = groupBy(itemsInCart, "customerId")
     currentCustomerCartGroup = group[currentCustomerId]
-    isCurrentCustomerSubmited = !currentCustomerCartGroup.some(
-      a => !a.readyToOrder
-    )
+    isCurrentCustomerSubmited =
+      currentCustomerCartGroup &&
+      currentCustomerCartGroup.length > 0 &&
+      !currentCustomerCartGroup.some(a => !a.readyToOrder)
+  }
+
+  const share = () => {
+    const link = `http://localhost:3000/cart/${cartId}/${shopId}`
+    navigator.clipboard.writeText(link)
+    toastSuccess(`Link share was copied to clipboard: ${link}`)
   }
 
   return (
     <>
-      <Header>Cart {cartId}</Header>
+      <Header>
+        <Grid columns={2}>
+          <Grid.Row>
+            <Grid.Column>Cart {cartId}</Grid.Column>
+            <Grid.Column>
+              {isHost && (
+                <Button
+                  basic
+                  content="Share"
+                  labelPosition="left"
+                  icon="share alternate"
+                  onClick={share}
+                  color="green"
+                  style={{ width: "100%", height: "100%", padding: "10px" }}
+                />
+              )}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Header>
+      <Divider></Divider>
       <List divided selection>
         <List.Item className="total">
           Total
@@ -53,7 +90,7 @@ const Cart = ({
           labelPosition="left"
           icon="thumbs up outline"
           color="green"
-          style={{ marginTop: 15, left: 0, width: "49%", marginRight: "1%" }}
+          style={{ marginTop: 15, left: 0, width: "48%", marginRight: "1%" }}
           onClick={() => {
             submitCart()
           }}
@@ -63,9 +100,9 @@ const Cart = ({
           basic
           content="Un Submit"
           labelPosition="left"
-          icon="thumbs up outline"
+          icon="thumbs down outline"
           color="red"
-          style={{ marginTop: 15, width: "49%" }}
+          style={{ marginTop: 15, width: "48%" }}
           onClick={() => {
             unSubmitCart()
           }}

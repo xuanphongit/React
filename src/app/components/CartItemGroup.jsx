@@ -4,14 +4,14 @@ import { generateKey } from "../helpers/crypto-helper"
 import CartItem from "./CartItem"
 
 const CartItemGroup = ({ group, deleteItem }) => {
-  const isCurrentUserCompleteOrder = !group.some(a => !a.readyToOrder)
+  const isSubmitted = !group.some(a => !a.readyToOrder)
   return (
     <Segment raised>
       <Header size={"small"}>
         {group[0].customerName}{" "}
         <Checkbox
           label="Completed"
-          checked={isCurrentUserCompleteOrder}
+          checked={isSubmitted}
           readOnly
         />
       </Header>
@@ -23,6 +23,7 @@ const CartItemGroup = ({ group, deleteItem }) => {
                 key={generateKey()}
                 item={group}
                 deleteItem={deleteItem}
+                isSubmitted={isSubmitted}
               ></CartItem>
             ))}
         </Grid>
