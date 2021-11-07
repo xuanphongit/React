@@ -15,19 +15,14 @@ import { Constants } from "../helpers/constants"
 const Store = () => {
   const { toastError } = useToast()
   const { shopId, cartId } = useParams()
-
   const [items, setItems] = useState([])
   const [shopName, setshopName] = useState("")
   const [cart, setCart] = useState({})
   const [isHost, setIsHost] = useState(false)
   const [currentCartId, setCartId] = useState(0)
-
   const [cartHubConnection, setCartHubConnection] = useState(null)
-  const [shopHubConnection, setShopHubConnection] = useState(null)
-
   const userInfor = useSelector(state => state.SignIn)
   const customerId = userInfor.signInInfor.customerId
-
   const postData = {
     ShopId: shopId,
     CustomerId: customerId,
@@ -86,7 +81,6 @@ const Store = () => {
       .then(response => {
         setItems(response.data.items.filter(a => a.isActive))
         setshopName(response.data.name)
-        connectShopHub(shopId)
       })
       .catch(error => {
         toastError(error)
@@ -114,12 +108,6 @@ const Store = () => {
       }
     })
 
-    cartHubConnection.on(HubMethod.NewOrder, response => {
-      if (response && response.customerId != customerId) {
-        loadCart()
-      }
-    })
-
     cartHubConnection.on(HubMethod.SubmitItems, response => {
       if (response && response.customerId != customerId) {
         loadCart()
@@ -131,14 +119,6 @@ const Store = () => {
         loadCart()
       }
     })
-  }
-
-  const connectShopHub = shopId => {
-    if (!shopHubConnection) {
-      const shopHub = `${HubConnectionUrl.ShopHub}${shopId}`
-      const hubConnection = getHubConnection(shopHub)
-      setShopHubConnection(hubConnection)
-    }
   }
 
   const deleteItem = id => {
@@ -221,13 +201,14 @@ const Store = () => {
   const placeNewOrder = () => {
     var orederRequest = {
       cartId: currentCartId,
-      deliveryInformation: Constants.OrderStatus.Confirmed,
+      deliveryInformation: Constants.OrderStatus.Ordered,
     }
     // place new order
     orderApi
       .PlacedNewOrder(orederRequest)
       .then(response => {
         // refresh cart
+        setCartHubConnection(null)
         loadCart()
       })
       .catch(error => {
