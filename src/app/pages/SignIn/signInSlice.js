@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage';
+import { createSlice } from "@reduxjs/toolkit"
+import storage from "redux-persist/lib/storage"
 
 const initialState = { isShop: false, signInInfor: {} }
 
@@ -15,10 +15,10 @@ const signInSlice = createSlice({
       state.signInInfor = action.payload
     },
 
-    clearStore: (state) => { 
-      storage.removeItem('persist:root')
+    clearStore: state => {
+      storage.removeItem("persist:root")
       state = initialState
-    }
+    },
   },
 })
 

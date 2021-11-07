@@ -12,13 +12,14 @@ import SignIn from "../pages/SignIn/SignIn"
 import SignUp from "../pages/SignUp/SignUp"
 import Home from "../pages/Home/Home"
 import Profile from "../pages/Profile/Profile"
+import HistoryOrder from "../pages/HistoryOrder"
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Switch>
         <Route path="/" exact>
-          <Redirect to="/store" />
+          <Redirect to="/home" />
         </Route>
         <Route path="/admin" exact>
           <Redirect to="/admin/view-orders" />
@@ -31,11 +32,16 @@ const Router = () => {
         <Route path="/Home" exact component={Home} />
         <AdminLayoutRoute exact path="/admin/view-menu" component={ViewMenu} />
         <CustomerLayoutRoute exact path="/store" component={Stores} />
-        <CustomerLayoutRoute path="/Cart/:cartId/:shopId" exact component={Store} />
+        <CustomerLayoutRoute exact path="/history" component={HistoryOrder} />
+        <CustomerLayoutRoute
+          path="/Cart/:cartId/:shopId"
+          exact
+          component={Store}
+        />
         <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
         <DefaultLayoutRoute exact path="/sign-in" component={SignIn} />
         <DefaultLayoutRoute exact path="/sign-up" component={SignUp} />
-        <DefaultLayoutRoute exact path="/admin/profile" component={Profile} />
+        <AdminLayoutRoute exact path="/admin/profile" component={Profile} />
         <Route path="*">
           <NotFound />
         </Route>

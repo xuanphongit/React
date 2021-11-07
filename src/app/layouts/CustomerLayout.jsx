@@ -15,7 +15,8 @@ const CustomerLayout = ({ children }) => {
             </Container>
           </Container>
         </Grid.Column>
-        <Grid.Column width={2}></Grid.Column>
+        <Grid.Column width={2}>
+        </Grid.Column>
       </Grid>
     </div>
   )

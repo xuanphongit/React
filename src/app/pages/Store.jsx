@@ -6,26 +6,32 @@ import Cart from "../components/Cart"
 import { useSelector } from "react-redux"
 import shopApi from "../api/shopApi"
 import cartApi from "../api/cartApi"
+import orderApi from "../api/orderApi"
 import useToast from "../hooks/useToast"
 import { getHubConnection } from "../signalr/signalr"
 import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
+import { Constants } from "../helpers/constants"
 
 const Store = () => {
   const { toastError } = useToast()
   const { shopId, cartId } = useParams()
+
   const [items, setItems] = useState([])
   const [shopName, setshopName] = useState("")
   const [cart, setCart] = useState({})
   const [isHost, setIsHost] = useState(false)
+  const [currentCartId, setCartId] = useState(0)
+
+  const [cartHubConnection, setCartHubConnection] = useState(null)
+  const [shopHubConnection, setShopHubConnection] = useState(null)
+
   const userInfor = useSelector(state => state.SignIn)
   const customerId = userInfor.signInInfor.customerId
-  const [currentCartId, setCartId] = useState(0)
+
   const postData = {
     ShopId: shopId,
     CustomerId: customerId,
   }
-  const [cartHubConnection, setCartHubConnection] = useState(null)
-  const [shopHubConnection, setShopHubConnection] = useState(null)
 
   useEffect(() => {
     // get items in shop
@@ -107,6 +113,24 @@ const Store = () => {
         loadCart()
       }
     })
+
+    cartHubConnection.on(HubMethod.NewOrder, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
+
+    cartHubConnection.on(HubMethod.SubmitItems, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
+
+    cartHubConnection.on(HubMethod.UnsubmitItems, response => {
+      if (response && response.customerId != customerId) {
+        loadCart()
+      }
+    })
   }
 
   const connectShopHub = shopId => {
@@ -140,6 +164,70 @@ const Store = () => {
         cartId: currentCartId,
       })
       .then(response => {
+        const { itemId, errorMessage } = response.data
+        if (itemId) {
+          loadCart()
+        } else {
+          toastError(errorMessage)
+        }
+      })
+      .catch(error => {
+        toastError(error)
+      })
+  }
+
+  const submitCart = () => {
+    // submit items
+    const { itemsInCart } = cart
+
+    if (itemsInCart && itemsInCart.length > 0) {
+      const postData = {
+        items: itemsInCart.filter(a => a.customerId == customerId),
+        customerId: customerId,
+        cartId: currentCartId,
+      }
+      cartApi
+        .SubmitItemsInCart(postData)
+        .then(response => {
+          loadCart()
+        })
+        .catch(error => {
+          toastError(error)
+        })
+    }
+  }
+
+  const unSubmitCart = () => {
+    // unsubmit items
+    const { itemsInCart } = cart
+
+    if (itemsInCart && itemsInCart.length > 0) {
+      const postData = {
+        items: itemsInCart.filter(a => a.customerId == customerId),
+        customerId: customerId,
+        cartId: currentCartId,
+      }
+      cartApi
+        .UnSubmitItemsIncart(postData)
+        .then(response => {
+          loadCart()
+        })
+        .catch(error => {
+          toastError(error)
+        })
+    }
+  }
+
+  const placeNewOrder = () => {
+    var orederRequest = {
+      cartId: currentCartId,
+      deliveryInformation: Constants.OrderStatus.Confirmed,
+    }
+    // place new order
+    orderApi
+      .PlacedNewOrder(orederRequest)
+      .then(response => {
+        // refresh cart
         loadCart()
       })
       .catch(error => {
@@ -157,7 +245,15 @@ const Store = () => {
           )}
         </Grid.Column>
         <Grid.Column width={4}>
-          <Cart cart={cart} deleteItem={deleteItem}></Cart>
+          <Cart
+            cart={cart}
+            deleteItem={deleteItem}
+            submitCart={submitCart}
+            isHost={isHost}
+            currentCustomerId={customerId}
+            unSubmitCart={unSubmitCart}
+            placeNewOrder={placeNewOrder}
+          ></Cart>
         </Grid.Column>
       </Grid>
     </>

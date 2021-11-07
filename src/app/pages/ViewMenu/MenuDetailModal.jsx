@@ -9,6 +9,7 @@ const MenuDetailModal = forwardRef((props, ref) => {
   const [menu, setItem] = useState({})
   const [id, setId] = useState(null)
   const inputFileRef = useRef(null)
+  const {refreshData} = props
 
   useImperativeHandle(ref, () => ({
     open(id) {
@@ -45,13 +46,13 @@ const MenuDetailModal = forwardRef((props, ref) => {
         form_data.append("Image", dataURIToBlob(image))
       }
       itemApi.UpdateItem(form_data).then(response => {
-        props.refreshData()
+        refreshData()
       })
     } else {
       const form_data = new FormData(document.getElementById("ItemData"))
       form_data.append("ShopId", signInformation.signInInfor.shopId)
       itemApi.AddItem(form_data).then(response => {
-        props.refreshData()
+        refreshData()
       })
     }
 

@@ -1,6 +1,5 @@
 import MenuDetailModal from "./ViewMenu/MenuDetailModal"
 import MenuItemList from "../components/MenuItemList"
-import { generateMenu } from "../helpers/fake-data-helper"
 import SectionHeader from "../components/SectionHeader"
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
@@ -24,7 +23,6 @@ const ViewMenu = () => {
 const data = { ShopId: signInformation.signInInfor.shopId }
   const deleteItem = id => {
     data.ItemId = id
-    console.log(data)
     itemApi
       .Delete(data)
       .then(response => {
@@ -32,8 +30,6 @@ const data = { ShopId: signInformation.signInInfor.shopId }
         fetchData()
       })
       .catch(error => {
-    console.log(error)
-
         toastError(error)
       })
   }
