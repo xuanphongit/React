@@ -17,6 +17,10 @@ const HeaderGuest = () => {
   return (
     <Menu className="header" pointing secondary widths={5}>
       <Menu.Item></Menu.Item>
+      <Menu.Item onClick={() => history.push("/store")}>
+        Store List
+        <i className=" large coffee icon"></i>
+      </Menu.Item>
       <Menu.Item
         name="profile"
         active={activeItem === "profile"}
@@ -24,9 +28,12 @@ const HeaderGuest = () => {
       >
         <Icon size={"small"} name="user" /> Profile
       </Menu.Item>
+
       <Menu.Item onClick={() => history.push("/store")}>
-        <Image src="/logo/logo32.png" />
+        History
+        <i className=" small history icon"></i>
       </Menu.Item>
+
       <Menu.Item
         name="logoff"
         active={activeItem === "logoff"}

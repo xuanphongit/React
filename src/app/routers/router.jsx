@@ -39,7 +39,7 @@ const Router = () => {
         <CustomerLayoutRoute exact path="/store/:shopId" component={Store} />
         <DefaultLayoutRoute exact path="/sign-in" component={SignIn} />
         <DefaultLayoutRoute exact path="/sign-up" component={SignUp} />
-        <DefaultLayoutRoute exact path="/admin/profile" component={Profile} />
+        <AdminLayoutRoute exact path="/admin/profile" component={Profile} />
         <Route path="*">
           <NotFound />
         </Route>

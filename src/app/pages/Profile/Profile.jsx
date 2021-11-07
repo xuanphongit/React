@@ -1,5 +1,5 @@
 import { useHistory } from "react-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import useToast from "../../hooks/useToast"
 import React from "react"
 import {
@@ -20,8 +20,22 @@ const Profile = () => {
   const history = useHistory()
   const { toastSuccess, toastError } = useToast()
 
-  const data = useSelector(state => state.SignIn)
-  const { phoneNumber } = data.signInInfor
+  const shopId = useSelector(state => state.SignIn).signInInfor.shopId
+  const [shop, setShop] = useState({})
+  const [file, setFile] = React.useState(null)
+
+  useEffect(() => {
+    shopApi
+      .getShopInforById(shopId)
+      .then(response => {
+        setShop(response.data)
+      })
+      .catch(console.error())
+  }, [])
+
+  const { image, name, phoneNumber } = shop
+
+  const imgSrc = `data:image/jpeg;base64,${image}`
 
   const UpdateInformation = () => {
     history.push("/admin")
@@ -42,8 +56,6 @@ const Profile = () => {
       })
   }
 
-  const [file, setFile] = React.useState(null)
-
   const fileHandler = e => {
     setFile(e.target.files[0])
   }
@@ -62,14 +74,18 @@ const Profile = () => {
             <Form id="update-form">
               <Form.Field>
                 <label>{labelName}</label>
-                <input placeholder={labelName} name="name" />
+                <input
+                  placeholder={labelName}
+                  name="name"
+                  defaultValue={name}
+                />
               </Form.Field>
 
               <Form.Field>
                 <label>Phone Number</label>
                 <input
                   placeholder="Phone Number"
-                  value={phoneNumber}
+                  defaultValue={phoneNumber}
                   name="PhoneNumber"
                   readOnly
                 />
@@ -83,16 +99,20 @@ const Profile = () => {
               <div>
                 <Form.Field>
                   <label>{imageName}</label>
-                  {file !== null ? (
+                  {
                     <div className="item">
                       <Image
-                        src={file ? URL.createObjectURL(file) : null}
+                        src={
+                          file
+                            ? URL.createObjectURL(file)
+                            : image
+                            ? imgSrc
+                            : "https://dummyimage.com/900x900/ecf0f1/aaa"
+                        }
                         alt={file ? file.name : null}
                       />
                     </div>
-                  ) : (
-                    <div></div>
-                  )}
+                  }
                   <Button as="label" htmlFor="file" type="button">
                     Upload {imageName}
                   </Button>

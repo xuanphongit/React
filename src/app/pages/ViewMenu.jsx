@@ -1,6 +1,5 @@
 import MenuDetailModal from "./ViewMenu/MenuDetailModal"
 import MenuItemList from "../components/MenuItemList"
-import { generateMenu } from "../helpers/fake-data-helper"
 import SectionHeader from "../components/SectionHeader"
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"

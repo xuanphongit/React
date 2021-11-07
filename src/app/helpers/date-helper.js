@@ -15,7 +15,7 @@ export const addDay = (duration, date = null) => {
   return d.add(duration, "day").toDate()
 }
 
-export const format = (date = null, format = "MM/DD/YYYY HH:mm") => {
+export const formatDate = (date = null, format = "MM/DD/YYYY HH:mm") => {
   const d = toDayjs(date)
   return d.format(format)
 }

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, Image } from "semantic-ui-react"
 import StoreInforField from "../../components/StoreInforField"
-import ModifyStoreModal from "./RightSideBar/ModifyStoreModal"
 import { useSelector } from "react-redux"
 import shopApi from "../../api/shopApi"
 import { useHistory } from "react-router"
@@ -26,7 +25,6 @@ const RightSideBar = () => {
 
   const imgSrc = `data:image/jpeg;base64,${image}`
 
-  const modalRef = useRef(null)
   const history = useHistory()
 
   const viewShopProfile = id => {
@@ -95,7 +93,6 @@ const RightSideBar = () => {
         style={{ marginTop: 15, width: "100%" }}
       />
 
-      <ModifyStoreModal ref={modalRef}></ModifyStoreModal>
     </div>
   )
 }

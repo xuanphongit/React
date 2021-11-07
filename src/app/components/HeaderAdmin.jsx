@@ -15,9 +15,13 @@ const HeaderAdmin = () => {
   }
 
   return (
-    <Menu className="header" stackable>
-      <Menu.Item onClick={() => history.push("/admin")}>
-        <Image src="/logo/logo32.png" />
+    <Menu className="header" stackable pointing secondary widths={5}>
+      <Menu.Item name="orders" onClick={() => history.push("/admin")}>
+        <Icon name="list" /> Orders
+      </Menu.Item>
+
+      <Menu.Item name="menu" onClick={() => history.push("/admin/view-menu")}>
+        <Icon name="list alternate outline" /> Menu
       </Menu.Item>
 
       <Menu.Item
@@ -25,7 +29,8 @@ const HeaderAdmin = () => {
         active={activeItem === "profile"}
         onClick={() => history.push("/admin/profile")}
       >
-        <Icon size={"small"} name="user" /> Profile
+        <i className="settings icon"></i>
+        Profile
       </Menu.Item>
 
       <Menu.Item

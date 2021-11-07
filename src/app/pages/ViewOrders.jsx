@@ -1,6 +1,5 @@
 import { AgGridReact } from "ag-grid-react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { generateOrders } from "../helpers/fake-data-helper"
 import ActionCellRenderer from "./ViewOrders/ActionCellRenderer"
 import StatusCellRenderer from "./ViewOrders/StatusCellRenderer"
 import OrderDetailModal from "./ViewOrders/OrderDetailModal"
@@ -8,13 +7,14 @@ import SectionHeader from "../components/SectionHeader"
 import { useSelector } from "react-redux"
 import orderApi from "../api/orderApi"
 import useToast from "../hooks/useToast"
-import { formatDate, formatMoney } from "../helpers/common-helper"
+import { formatDate } from "../helpers/date-helper"
+import { formatCurrency } from "../helpers/number-helper"
 
 const ViewOrders = () => {
   const { toastSuccess, toastError } = useToast()
 
   const shopId = useSelector(state => state.SignIn).signInInfor.shopId
-  const [rowData, setRowData] = useState(generateOrders())
+  const [rowData, setRowData] = useState([])
 
   useEffect(() => {
     getOrders()
@@ -42,7 +42,7 @@ const ViewOrders = () => {
         headerName: "Total Price",
         field: "totalPrice",
         cellRenderer: data => {
-          return data.value ? formatMoney(data.value) : "0"
+          return data.value ? formatCurrency(data.value) : "0"
         },
       },
       {
