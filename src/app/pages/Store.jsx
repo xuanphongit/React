@@ -224,7 +224,7 @@ const Store = () => {
   }
 
   const share = () => {
-    const link = `http://localhost:3000/cart/${currentCartId}/${shopId}`
+    const link = `${window.location.origin}/cart/${currentCartId}/${shopId}`
     navigator.clipboard.writeText(link)
     toastSuccess(`Link share was copied to clipboard: ${link}`)
   }

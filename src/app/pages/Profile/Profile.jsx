@@ -30,7 +30,7 @@ const Profile = () => {
       .then(response => {
         setShop(response.data)
       })
-      .catch(toastError.error())
+      .catch(error => toastError(error))
   }, [])
 
   const { image, name, phoneNumber } = shop

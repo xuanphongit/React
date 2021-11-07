@@ -23,7 +23,7 @@ const RightSideBar = () => {
 
   const { image, name, phoneNumber } = shop
 
-  const link = `http://localhost:3000/store/${shopId}`
+  const link = `${window.location.origin}/store/${shopId}`
 
   const imgSrc = `data:image/jpeg;base64,${image}`
 
@@ -56,7 +56,6 @@ const RightSideBar = () => {
         icon="linkify"
         title="Link"
         label={link}
-        link={link}
       ></StoreInforField>
       <StoreInforField
         icon="hashtag"
