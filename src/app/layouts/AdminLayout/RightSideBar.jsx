@@ -23,7 +23,7 @@ const RightSideBar = () => {
 
   const { image, name, phoneNumber } = shop
 
-  const link = `http://localhost:3000/shop/${shopId}`
+  const link = `http://localhost:3000/store/${shopId}`
 
   const imgSrc = `data:image/jpeg;base64,${image}`
 
