@@ -11,7 +11,6 @@ import {
 import CartItemGroup from "./CartItemGroup"
 import { formatCurrency, formatPercentage } from "./../helpers/number-helper"
 import { groupBy } from "../helpers/common-helper"
-import useToast from "../hooks/useToast"
 
 const Cart = ({
   cart,
@@ -21,9 +20,9 @@ const Cart = ({
   currentCustomerId,
   unSubmitCart,
   placeNewOrder,
+  share
 }) => {
   const { cartId, shopId, customerId, itemsInCart, totalPrice } = cart
-  const { toastSuccess, toastError } = useToast()
   let customerIds = []
   let group = {}
   let isCurrentCustomerSubmited = false
@@ -45,11 +44,7 @@ const Cart = ({
       !currentCustomerCartGroup.some(a => !a.readyToOrder)
   }
 
-  const share = () => {
-    const link = `http://localhost:3000/cart/${cartId}/${shopId}`
-    navigator.clipboard.writeText(link)
-    toastSuccess(`Link share was copied to clipboard: ${link}`)
-  }
+  
 
   return (
     <>
