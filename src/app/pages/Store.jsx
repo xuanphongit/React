@@ -1,4 +1,4 @@
-import { useParams } from "react-router"
+import { useParams, useHistory } from "react-router"
 import { useEffect, useState } from "react"
 import MenuItemList from "./../components/MenuItemList"
 import { Grid, Header } from "semantic-ui-react"
@@ -13,7 +13,7 @@ import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
 import { Constants } from "../helpers/constants"
 
 const Store = () => {
-  const { toastError } = useToast()
+  const { toastError, toastSuccess } = useToast()
   const { shopId, cartId } = useParams()
   const [items, setItems] = useState([])
   const [shopName, setshopName] = useState("")
@@ -27,6 +27,7 @@ const Store = () => {
     ShopId: shopId,
     CustomerId: customerId,
   }
+  const history = useHistory()
 
   useEffect(() => {
     // get items in shop
@@ -119,6 +120,12 @@ const Store = () => {
         loadCart()
       }
     })
+
+    cartHubConnection.on(HubMethod.NewOrder, response => {
+      if (response && response.customerId != customerId && !isHost) {
+        history.push("/store")
+      }
+    })
   }
 
   const deleteItem = id => {
@@ -207,13 +214,19 @@ const Store = () => {
     orderApi
       .PlacedNewOrder(orederRequest)
       .then(response => {
-        // refresh cart
         setCartHubConnection(null)
+        // refresh cart
         loadCart()
       })
       .catch(error => {
         toastError(error)
       })
+  }
+
+  const share = () => {
+    const link = `http://localhost:3000/cart/${currentCartId}/${shopId}`
+    navigator.clipboard.writeText(link)
+    toastSuccess(`Link share was copied to clipboard: ${link}`)
   }
 
   return (
@@ -234,6 +247,7 @@ const Store = () => {
             currentCustomerId={customerId}
             unSubmitCart={unSubmitCart}
             placeNewOrder={placeNewOrder}
+            share={share}
           ></Cart>
         </Grid.Column>
       </Grid>
