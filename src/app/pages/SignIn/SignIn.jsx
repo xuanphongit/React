@@ -97,7 +97,12 @@ const Login = () => {
             <Form id="sign-in-form">
               <Form.Field>
                 <label>Phone Number</label>
-                <input placeholder="Phone Number" name="phoneNumber" />
+                <input
+                  placeholder="Phone Number"
+                  name="phoneNumber"
+                  required
+                  maxLength={10}
+                />
               </Form.Field>
               <Button type="submit" color="green" fluid onClick={submit}>
                 Submit

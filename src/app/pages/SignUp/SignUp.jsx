@@ -95,11 +95,16 @@ const Login = () => {
             <Form id="sign-up-form">
               <Form.Field>
                 <label>{labelName}</label>
-                <input placeholder={labelName} name="name" />
+                <input placeholder={labelName} name="name" required />
               </Form.Field>
               <Form.Field>
                 <label>Phone Number</label>
-                <input placeholder="Phone Number" name="phoneNumber" />
+                <input
+                  placeholder="Phone Number"
+                  name="phoneNumber"
+                  required
+                  maxLength={10}
+                />
               </Form.Field>
 
               <div>
@@ -124,6 +129,7 @@ const Login = () => {
                     hidden
                     name={imageName}
                     onChange={fileHandler}
+                    required
                   />
                 </Form.Field>
               </div>
