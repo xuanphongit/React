@@ -8,15 +8,19 @@ import { useSelector } from "react-redux"
 import orderApi from "../api/orderApi"
 import useToast from "../hooks/useToast"
 import { formatDate, formatMoney } from "../helpers/common-helper"
+import { getHubConnection } from "../signalr/signalr"
+import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
 
 const ViewOrders = () => {
   const { toastSuccess, toastError } = useToast()
 
   const shopId = useSelector(state => state.SignIn).signInInfor.shopId
   const [rowData, setRowData] = useState([])
+  const [shopHubConnection, setShopHubConnection] = useState(null)
 
   useEffect(() => {
     getOrders()
+    connectShopHub(shopId)
   }, [])
 
   const getOrders = () => {
@@ -28,6 +32,22 @@ const ViewOrders = () => {
       .catch(error => {
         toastError(error)
       })
+  }
+
+  const connectShopHub = shopId => {
+    if (!shopHubConnection) {
+      const shopHub = `${HubConnectionUrl.ShopHub}${shopId}`
+      const hubConnection = getHubConnection(shopHub, shopNotifyHandle)
+      setShopHubConnection(hubConnection)
+    }
+  }
+
+  const shopNotifyHandle = shopHubConnection => {
+    shopHubConnection.on(HubMethod.NewOrder, response => {
+      if (response) {
+        getOrders()
+      }
+    })
   }
 
   // never changes, so we can use useMemo

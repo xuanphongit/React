@@ -108,12 +108,6 @@ const Store = () => {
       }
     })
 
-    cartHubConnection.on(HubMethod.NewOrder, response => {
-      if (response && response.customerId != customerId) {
-        loadCart()
-      }
-    })
-
     cartHubConnection.on(HubMethod.SubmitItems, response => {
       if (response && response.customerId != customerId) {
         loadCart()
@@ -214,6 +208,7 @@ const Store = () => {
       .PlacedNewOrder(orederRequest)
       .then(response => {
         // refresh cart
+        setCartHubConnection(null)
         loadCart()
       })
       .catch(error => {
