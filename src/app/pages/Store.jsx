@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import MenuItemList from "./../components/MenuItemList"
 import { Grid, Header } from "semantic-ui-react"
 import Cart from "../components/Cart"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import shopApi from "../api/shopApi"
 import cartApi from "../api/cartApi"
 import orderApi from "../api/orderApi"
@@ -11,6 +11,7 @@ import useToast from "../hooks/useToast"
 import { getHubConnection } from "../signalr/signalr"
 import { HubConnectionUrl, HubMethod } from "../signalr/hubConstants"
 import { Constants } from "../helpers/constants"
+import { setCartHubConnection } from "./SignIn/signInSlice"
 
 const Store = () => {
   const { toastError, toastSuccess } = useToast()
@@ -20,14 +21,15 @@ const Store = () => {
   const [cart, setCart] = useState({})
   const [isHost, setIsHost] = useState(false)
   const [currentCartId, setCartId] = useState(0)
-  const [cartHubConnection, setCartHubConnection] = useState(null)
   const userInfor = useSelector(state => state.SignIn)
   const customerId = userInfor.signInInfor.customerId
+  const cartHubConnection = Object.assign({}, userInfor.cartHubConnection); 
   const postData = {
     ShopId: shopId,
     CustomerId: customerId,
   }
   const history = useHistory()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     // get items in shop
@@ -37,7 +39,7 @@ const Store = () => {
     loadCart()
   }, [])
 
-  const loadCart = () => {
+  const loadCart = request => {
     // guest
     if (cartId) {
       setIsHost(false)
@@ -89,10 +91,12 @@ const Store = () => {
   }
 
   const connectCartHub = cartId => {
-    if (!cartHubConnection) {
+    if (cartHubConnection.cartId != cartId) {
       const cartHub = `${HubConnectionUrl.CartHub}${cartId}`
       const hubConnection = getHubConnection(cartHub, cartNotifyHandle)
-      setCartHubConnection(hubConnection)
+      cartHubConnection.cartId = cartId
+      cartHubConnection.hubConnection = hubConnection
+      dispatch(setCartHubConnection(cartHubConnection))
     }
   }
 
@@ -214,8 +218,6 @@ const Store = () => {
     orderApi
       .PlacedNewOrder(orederRequest)
       .then(response => {
-        setCartHubConnection(null)
-        // refresh cart
         loadCart()
       })
       .catch(error => {

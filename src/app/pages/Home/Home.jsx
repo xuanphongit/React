@@ -23,7 +23,7 @@ const FixedMenuLayout = () => (
         <Menu.Item as="a" header to="/home">
           <Image
             size="mini"
-            src="/logo/logo32.png"
+            src="/logo/cart-icon.png"
             style={{ marginRight: "1.5em" }}
           />
           Shopping Cart
@@ -40,14 +40,9 @@ const FixedMenuLayout = () => (
       </Container>
     </Menu>
 
-    <Container text style={{ marginTop: "7em" }}>
-      <Header as="h1">Shopping Cart</Header>
-      <p>This is a basic fixed menu template using fixed size containers.</p>
-      <p>
-        A text container is used for the main container, which is useful for
-        single column layouts.
-      </p>
-      <BasicRows />
+    <Container text textAlign='center' style={{ marginTop: "7em" }}>
+      <Header as="h1">Welcome to Shopping Cart</Header>
+      <Image src="/cart-logo.png" />
     </Container>
 
     <Segment
@@ -57,7 +52,7 @@ const FixedMenuLayout = () => (
     >
       <Container textAlign="center">
         <Divider inverted section />
-        <Image centered size="mini" src="/logo/logo64.png" />
+        <Image centered size="mini" src="/logo/cart-icon.png" />
         <List horizontal inverted divided link size="small">
           <List.Item as="a" href="#">
             Contact Us

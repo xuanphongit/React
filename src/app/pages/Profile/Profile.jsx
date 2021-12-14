@@ -65,7 +65,7 @@ const Profile = () => {
 
   return (
     <Container className="auth-form">
-      <Image src="/logo/logo64.png" centered />
+      <Image src="/logo/cart-icon.png" centered />
       <Grid columns="equal">
         <Grid.Column></Grid.Column>
         <Grid.Column width={6}>

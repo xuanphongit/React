@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import storage from "redux-persist/lib/storage"
 
-const initialState = { isShop: false, signInInfor: {} }
+const initialState = { isShop: false, signInInfor: {}, cartHubConnection: {} }
 
 const signInSlice = createSlice({
   name: "SignIn",
@@ -19,9 +19,13 @@ const signInSlice = createSlice({
       storage.removeItem("persist:root")
       state = initialState
     },
+
+    setCartHubConnection: (state, action) => {
+      state.cartHubConnection = action.payload
+    },
   },
 })
 
 const { actions, reducer } = signInSlice
-export const { setIsShopFlag, setSignInInformation, clearStore } = actions
+export const { setIsShopFlag, setSignInInformation, clearStore, setCartHubConnection } = actions
 export default reducer

@@ -6,6 +6,7 @@ export const getHubConnection = async (hubUrl, callback) => {
     .withUrl(hubUrl, {
       withCredentials: false,
     })
+    .withAutomaticReconnect()
     .configureLogging(signalR.LogLevel.Information)
     .build()
 
